@@ -1,37 +1,33 @@
 """
-patrol_translate_service.py  (v2)
+patrol_translate_service.py  (v3)
 
 Background service that watches the F2_Patrol_Report table and, for every
-new/edited record whose `comment` column is NOT Japanese, calls a local LLM
+new/edited record whose SOURCE column is NOT Japanese, calls a local LLM
 (LM Studio / any OpenAI-compatible /v1/chat/completions endpoint) to
-translate it into Japanese, then writes the translation back into the
-`comment` column.
+translate it into Japanese, then writes the translation into a separate
+TARGET column (source stays untouched).
 
 Translation logic (prompts, output cleanup, validation, retry policy) is
-UNCHANGED from v1 and mirrors the Java `PatrolCommentService` exactly.
+UNCHANGED from v1/v2 and mirrors the Java `PatrolCommentService` exactly.
 
-v2 architecture changes:
-  1. DB layer      - one persistent pyodbc connection, reused across polls,
-                      with automatic ping + reconnect instead of open/close
-                      every cycle.
-  2. Checkpoint     - watermark is (COALESCE(edit_date, created_at), id),
-                      so a row that gets edited after being scanned once
-                      will be picked up again.
-  3. Translation    - a local SQLite cache (hash of normalized text + source
-     cache             language -> translation) avoids calling the LLM again
-                      for text it has already translated.
-  4. Batch update   - translations for a whole poll batch are written with
-                      one executemany() + a single commit(), not per row.
-  5. Logging        - TimedRotatingFileHandler, rotates at midnight, keeps
-                      14 days of logs, plus console output.
-  6. Single instance - guarded two ways: (a) a local file lock so a second
-                      process on the same machine refuses to start, and
-                      (b) sp_getapplock on the persistent DB connection so
-                      a second process on a *different* machine pointing at
-                      the same DB also refuses to start.
-  7. HTTP client    - requests.Session with HTTPAdapter + urllib3 Retry for
-                      429/500/502/503/504, with backoff.
+--------------------------------------------------------------------
+v3 change: MULTIPLE column pairs in one service.
 
+Instead of a single hard-coded (comment -> comment_japanese) pair, the
+service now reads a list of "source:target" pairs from TRANSLATE_COLUMNS
+and processes all of them every poll cycle, e.g.:
+
+    TRANSLATE_COLUMNS=comment:comment_jp,countermeasure:countermeasure_jp
+
+Each pair is queue-based: a row is considered "pending" for a given pair
+whenever target IS NULL/empty and source IS NOT NULL. This naturally
+covers old rows (no watermark needed) and edited rows (if you ever clear
+the target column, it goes back into the queue).
+
+Everything else (persistent DB connection + reconnect, SQLite translation
+cache, batched UPDATE with executemany() + one commit, daily-rotating
+logs, single-instance guard via file lock + sp_getapplock, requests
+Session with HTTPAdapter/Retry) is unchanged from v2.
 --------------------------------------------------------------------
 Configuration (environment variables). Required: DB_SERVER, DB_DATABASE.
 
@@ -41,30 +37,34 @@ Configuration (environment variables). Required: DB_SERVER, DB_DATABASE.
   DB_USER / DB_PASSWORD  (omit both if DB_TRUSTED_CONNECTION=yes)
   DB_TRUSTED_CONNECTION  "yes" for Windows auth
 
-  TABLE_NAME             default "F2_Patrol_Report"
-  ID_COLUMN              default "id"
-  CREATED_COLUMN         default "created_at"
-  EDITED_COLUMN          default "edit_date"
-  SOURCE_COLUMN          default "comment"
+  TABLE_NAME                  default "F2_Patrol_Report"
+  ID_COLUMN                   default "id"
+  CREATED_COLUMN              default "created_at"
+  TRANSLATE_COLUMNS           default "comment:comment_jp,countermeasure:countermeasure_jp"
+                               comma-separated "source:target" pairs, e.g.
+                               "comment:comment_jp,countermeasure:countermeasure_jp"
+  AI_TRANSLATE_UPDATE_COLUMN  default "ai_translate_update_at"
+                               (shared timestamp column, stamped on every
+                               successful write to any target column)
 
   LM_URL                 default "http://192.168.122.16:1234"
-  LM_API_KEY             default ""
+  LM_API_KEY              default ""
   LM_MODEL               default "openai/gpt-oss-20b"
 
   POLL_INTERVAL_SECONDS  default 5
-  BATCH_SIZE             default 20
-  STATE_FILE             default "./patrol_translate_state.json"
-  CACHE_DB_FILE          default "./patrol_translate_cache.sqlite3"
-  LOCK_FILE              default "./patrol_translate.lock"
-  LOG_DIR                default "./logs"
-  LOG_FILE_NAME          default "patrol_translate.log"
-  LOG_BACKUP_DAYS        default 14
-  USE_DB_APPLOCK         default "1"  (also try sp_getapplock, best-effort)
-  HTTP_MAX_RETRIES       default 3
-  HTTP_BACKOFF_FACTOR    default 0.5
-  DRY_RUN                "1" to log without writing to DB
+  BATCH_SIZE              default 20     (rows fetched per pair, per poll)
+  STATE_FILE              default "./patrol_translate_state.json"
+  CACHE_DB_FILE           default "./patrol_translate_cache.sqlite3"
+  LOCK_FILE               default "./patrol_translate.lock"
+  LOG_DIR                 default "./logs"
+  LOG_FILE_NAME           default "patrol_translate.log"
+  LOG_BACKUP_DAYS         default 14
+  USE_DB_APPLOCK          default "1"  (also try sp_getapplock, best-effort)
+  HTTP_MAX_RETRIES        default 3
+  HTTP_BACKOFF_FACTOR     default 0.5
+  DRY_RUN                 "1" to log without writing to DB
 
-Requires: pyodbc, requests
+Requires: pyodbc, requests, python-dotenv
 --------------------------------------------------------------------
 """
 
@@ -119,9 +119,7 @@ class Config:
     table_name: str
     id_column: str
     created_column: str
-    edited_column: str
-    source_column: str
-    japanese_column: str
+    translate_columns: tuple  # tuple of (source_column, target_column) pairs
     ai_translate_update_column: str
 
     lm_url: str
@@ -147,6 +145,30 @@ class Config:
     max_retry: int = 1  # retry policy for a plain timeout (kept from v1)
 
 
+def _parse_translate_columns(raw: str) -> tuple:
+    """Parse "src1:tgt1,src2:tgt2" into (("src1","tgt1"), ("src2","tgt2"))."""
+    pairs = []
+    for chunk in raw.split(","):
+        chunk = chunk.strip()
+        if not chunk:
+            continue
+        if ":" not in chunk:
+            raise ValueError(
+                f"Invalid TRANSLATE_COLUMNS entry '{chunk}'. Expected 'source:target'."
+            )
+        source, target = chunk.split(":", 1)
+        source = source.strip()
+        target = target.strip()
+        if not source or not target:
+            raise ValueError(
+                f"Invalid TRANSLATE_COLUMNS entry '{chunk}'. Expected 'source:target'."
+            )
+        pairs.append((source, target))
+    if not pairs:
+        raise ValueError("TRANSLATE_COLUMNS must contain at least one 'source:target' pair.")
+    return tuple(pairs)
+
+
 def load_config() -> Config:
     def env(name: str, default: Optional[str] = None) -> Optional[str]:
         value = os.environ.get(name)
@@ -162,9 +184,9 @@ def load_config() -> Config:
         table_name=env("TABLE_NAME", "F2_Patrol_Report"),
         id_column=env("ID_COLUMN", "id"),
         created_column=env("CREATED_COLUMN", "created_at"),
-        edited_column=env("EDITED_COLUMN", "edit_date"),
-        source_column=env("SOURCE_COLUMN", "comment"),
-        japanese_column=env("JAPANESE_COLUMN", "comment_japanese"),
+        translate_columns=_parse_translate_columns(
+            env("TRANSLATE_COLUMNS", "comment:comment_japanese")
+        ),
         ai_translate_update_column=env("AI_TRANSLATE_UPDATE_COLUMN", "ai_translate_update_at"),
         lm_url=(env("LM_URL", "http://192.168.122.16:1234") or "").rstrip("/"),
         lm_api_key=env("LM_API_KEY"),
@@ -185,7 +207,7 @@ def load_config() -> Config:
 
 
 # --------------------------------------------------------------------------
-# Logging (#5 - TimedRotatingFileHandler)
+# Logging (TimedRotatingFileHandler)
 # --------------------------------------------------------------------------
 
 def setup_logging(cfg: Config) -> logging.Logger:
@@ -224,7 +246,7 @@ def abbreviate(value: Optional[str], max_length: int) -> Optional[str]:
 
 
 # --------------------------------------------------------------------------
-# Language helpers (UNCHANGED from v1 / PatrolCommentService)
+# Language helpers (UNCHANGED / PatrolCommentService)
 # --------------------------------------------------------------------------
 
 def normalize(value: Optional[str]) -> Optional[str]:
@@ -310,7 +332,7 @@ def clean_model_output(value: str) -> Optional[str]:
 
 
 # --------------------------------------------------------------------------
-# Prompts (UNCHANGED from v1)
+# Prompts (UNCHANGED)
 # --------------------------------------------------------------------------
 
 def vietnamese_to_japanese_prompt() -> str:
@@ -374,14 +396,14 @@ Mandatory rules:
 
 
 # --------------------------------------------------------------------------
-# Translation cache (#3 - SQLite)
+# Translation cache (SQLite)
 # --------------------------------------------------------------------------
 
 class TranslationCache:
     """SQLite-backed cache of source-text -> translated-text, keyed by a
-    hash of (source language flag + normalized source text). Avoids paying
-    for an LLM call when the exact same comment text has been seen before
-    (common with template phrases in safety patrol reports)."""
+    hash of (source language flag + normalized source text). Shared across
+    all column pairs on purpose: the same phrase appearing in `comment` and
+    `countermeasure` only needs to be translated once."""
 
     def __init__(self, db_file: Path):
         self.db_file = db_file
@@ -434,7 +456,7 @@ class TranslationCache:
 
 
 # --------------------------------------------------------------------------
-# LLM client (#7 - Session + HTTPAdapter + Retry)
+# LLM client (Session + HTTPAdapter + Retry)
 # --------------------------------------------------------------------------
 
 class LlmClient:
@@ -475,8 +497,6 @@ class LlmClient:
         url = f"{self.cfg.lm_url}/v1/chat/completions"
         started = time.monotonic()
 
-        # Session-level Retry already handles 429/5xx with backoff; this call
-        # only needs to additionally handle connect/read timeouts (below).
         response = self.session.post(
             url,
             json=payload,
@@ -527,9 +547,6 @@ class LlmClient:
         return clean_model_output(content)
 
     def translate_with_retry(self, text: str, source_is_japanese: bool) -> Optional[str]:
-        """Retry policy for connect/read TIMEOUTS specifically (kept identical
-        to v1 / Java MAX_RETRY=1). 429/5xx are already retried by the Session's
-        urllib3.Retry adapter above."""
         attempt = 0
         while True:
             try:
@@ -550,35 +567,47 @@ class LlmClient:
 
 
 def translate_default(client: LlmClient, cache: TranslationCache, input_text: str) -> str:
+    return translate_text(client, cache, input_text, source_is_japanese=False)
+
+
+def translate_text(
+    client: LlmClient,
+    cache: TranslationCache,
+    input_text: str,
+    source_is_japanese: bool,
+) -> str:
     original = normalize(input_text)
     if original is None or not should_translate(original):
         return input_text
 
     # Đã có tiếng Nhật: xem như đã dịch, tuyệt đối giữ nguyên comment.
-    if contains_japanese(original):
-        log.info("[TRANSLATE] Skip: comment already contains Japanese.")
+    if source_is_japanese:
+        if not contains_japanese(original):
+            log.info("[TRANSLATE] Skip: expected Japanese source text.")
+            return original
+    elif contains_japanese(original):
+        log.info("[TRANSLATE] Skip: text already contains Japanese.")
         return original
 
     # Chỉ dịch Việt/Latin -> Nhật
-    cached = cache.get(original, False)
-    if cached is not None and is_valid_translation(original, cached, False):
+    cached = cache.get(original, source_is_japanese)
+    if cached is not None and is_valid_translation(original, cached, source_is_japanese):
         return cached
 
-    translated = normalize(client.translate_with_retry(original, False))
+    translated = normalize(client.translate_with_retry(original, source_is_japanese))
 
-    # Lỗi LLM / kết quả không phải tiếng Nhật: không ghi đè raw comment.
-    if not is_valid_translation(original, translated, False):
-        log.warning("[TRANSLATE] Invalid translation; keeping original comment.")
+    # Lỗi LLM / kết quả không phải tiếng Nhật: không ghi đè raw text.
+    if not is_valid_translation(original, translated, source_is_japanese):
+        log.warning("[TRANSLATE] Invalid translation; keeping original text.")
         return original
 
-    cache.put(original, False, translated)
-
-    # Giữ tiếng Việt và thêm tiếng Nhật bên dưới.
+    cache.put(original, source_is_japanese, translated)
     return translated
 
 
 # --------------------------------------------------------------------------
-# Checkpoint / watermark state (#2)
+# Checkpoint / watermark state (kept for observability/logging only; the
+# actual work queue is driven by "target IS NULL/empty", see fetch_pending())
 # --------------------------------------------------------------------------
 
 @dataclass
@@ -613,7 +642,7 @@ def save_watermark(state_file: Path, watermark: Watermark) -> None:
 
 
 # --------------------------------------------------------------------------
-# Single-instance guard (#6)
+# Single-instance guard
 # --------------------------------------------------------------------------
 
 class FileLockGuard:
@@ -666,10 +695,6 @@ class FileLockGuard:
 
 
 def acquire_db_applock(conn, resource_name: str) -> bool:
-    """Best-effort SQL Server sp_getapplock so a second process on a
-    different host, pointed at the same database, also refuses to start.
-    Held for the lifetime of `conn` (session-scoped); no-ops gracefully on
-    non-SQL-Server or if the connection isn't available."""
     try:
         cursor = conn.cursor()
         cursor.execute(
@@ -685,11 +710,11 @@ def acquire_db_applock(conn, resource_name: str) -> bool:
         return result_code >= 0
     except Exception as exc:  # noqa: BLE001
         log.warning("[LOCK] sp_getapplock not available/failed (%s). Relying on file lock only.", exc)
-        return True  # don't block startup if the DB doesn't support applock
+        return True
 
 
 # --------------------------------------------------------------------------
-# DB layer (#1 - persistent connection with reconnect)
+# DB layer (persistent connection with reconnect)
 # --------------------------------------------------------------------------
 
 def build_connection_string(cfg: Config) -> str:
@@ -753,17 +778,16 @@ class DbConnection:
             self.conn = None
 
 
-def fetch_new_records(db: DbConnection, cfg: Config, watermark: Watermark):
-    # comment_japanese is the durable work queue: a blank value means this
-    # source comment still needs a Japanese translation.  This also catches
-    # older records that predate the local watermark.
+def fetch_pending(db: DbConnection, cfg: Config, source_column: str, target_column: str):
+    """Rows where `source_column` has text but `target_column` is still
+    empty -- i.e. still pending translation for THIS column pair."""
     watermark_expr = f"[{cfg.created_column}]"
     sql = (
-        f"SELECT TOP ({cfg.batch_size}) [{cfg.id_column}], [{cfg.source_column}], "
-        f"[{cfg.japanese_column}], {watermark_expr} AS watermark_ts "
+        f"SELECT TOP ({cfg.batch_size}) [{cfg.id_column}], [{source_column}], "
+        f"[{target_column}], {watermark_expr} AS watermark_ts "
         f"FROM [{cfg.table_name}] "
-        f"WHERE [{cfg.source_column}] IS NOT NULL "
-        f"AND ([{cfg.japanese_column}] IS NULL OR LTRIM(RTRIM([{cfg.japanese_column}])) = '') "
+        f"WHERE [{source_column}] IS NOT NULL "
+        f"AND ([{target_column}] IS NULL OR LTRIM(RTRIM([{target_column}])) = '') "
         f"ORDER BY {watermark_expr} DESC, [{cfg.id_column}] DESC"
     )
     cursor = db.cursor()
@@ -771,18 +795,21 @@ def fetch_new_records(db: DbConnection, cfg: Config, watermark: Watermark):
     return cursor.fetchall()
 
 
-def batch_update_comments(db: DbConnection, cfg: Config, updates: list[tuple[str, int]]) -> None:
-    """Write Japanese translations without changing the raw source comment."""
+def batch_update_target(db: DbConnection, cfg: Config, target_column: str, updates: list[tuple[str, int]]) -> None:
+    """Write translations into `target_column` without touching the source
+    column. updates: list of (translated_text, id)."""
     if not updates:
         return
     sql = (
         f"UPDATE [{cfg.table_name}] "
-        f"SET [{cfg.japanese_column}] = ?, "
+        f"SET [{target_column}] = ?, "
         f"[{cfg.ai_translate_update_column}] = GETDATE() "
         f"WHERE [{cfg.id_column}] = ?"
     )
     cursor = db.cursor()
-    cursor.fast_executemany = True
+    # Avoid pyodbc allocating one fixed string buffer from the first value in
+    # a batch.  Japanese translations naturally vary in length.
+    cursor.fast_executemany = False
     cursor.executemany(sql, updates)
     db.commit()
 
@@ -800,22 +827,24 @@ def _handle_shutdown(signum, frame):  # noqa: ARG001
     _shutdown_requested = True
 
 
-def process_batch(
+def process_pair(
     client: LlmClient,
     cache: TranslationCache,
     db: DbConnection,
     cfg: Config,
+    source_column: str,
+    target_column: str,
     watermark: Watermark,
 ) -> Watermark:
-    rows = fetch_new_records(db, cfg, watermark)
+    rows = fetch_pending(db, cfg, source_column, target_column)
+    source_is_japanese = source_column.casefold().endswith(("_jp", "_japanese"))
 
     if not rows:
         return watermark
 
     pending_updates: list[tuple[str, int]] = []
 
-    for record_id, comment, japanese_comment, watermark_ts in rows:
-        # Keep the greatest watermark so the checkpoint never moves back.
+    for record_id, source_value, target_value, watermark_ts in rows:
         if watermark_ts is not None and (
             watermark.last_ts is None
             or watermark_ts > watermark.last_ts
@@ -823,21 +852,24 @@ def process_batch(
         ):
             watermark = Watermark(last_ts=watermark_ts, last_id=record_id)
 
-        original = normalize(comment)
+        original = normalize(source_value)
         if original is None:
             continue
 
         # Defensive check in case another process filled the target between
         # the SELECT and this loop.
-        if contains_japanese(normalize(japanese_comment)):
-            log.info("[SKIP] id=%s: %s already contains Japanese.", record_id, cfg.japanese_column)
+        if contains_japanese(normalize(target_value)):
+            log.info("[SKIP] id=%s: %s already contains Japanese.", record_id, target_column)
             continue
 
         if not should_translate(original):
-            log.info("[SKIP] id=%s: not translatable text: [%s]", record_id, abbreviate(original, 120))
+            log.info(
+                "[SKIP] id=%s (%s): not translatable text: [%s]",
+                record_id, source_column, abbreviate(original, 120),
+            )
             continue
 
-        if contains_japanese(original):
+        if contains_japanese(original) and not source_is_japanese:
             japanese_lines = [
                 line.strip() for line in original.splitlines()
                 if contains_japanese(line)
@@ -845,33 +877,53 @@ def process_batch(
             existing_japanese = "\n".join(japanese_lines).strip()
             if existing_japanese:
                 log.info(
-                    "[MIGRATE] id=%s: copying existing Japanese to %s.",
-                    record_id,
-                    cfg.japanese_column,
+                    "[MIGRATE] id=%s: copying existing Japanese from %s to %s.",
+                    record_id, source_column, target_column,
                 )
                 pending_updates.append((existing_japanese, record_id))
             else:
-                log.info("[SKIP] id=%s: source comment already contains Japanese.", record_id)
+                log.info(
+                    "[SKIP] id=%s: %s already contains Japanese.", record_id, source_column,
+                )
             continue
 
-        log.info("[TRANSLATE] id=%s: source=[%s]", record_id, abbreviate(original, 160))
-        translated = translate_default(client, cache, original)
+        log.info("[TRANSLATE] id=%s (%s): source=[%s]", record_id, source_column, abbreviate(original, 160))
+        translated = translate_text(client, cache, original, source_is_japanese)
 
         if translated == original:
-            log.warning("[TRANSLATE] id=%s: translation unchanged/invalid, skipping.", record_id)
+            log.warning("[TRANSLATE] id=%s (%s): translation unchanged/invalid, skipping.", record_id, source_column)
             continue
 
-        log.info("[TRANSLATE] id=%s: result=[%s]", record_id, abbreviate(translated, 160))
+        log.info("[TRANSLATE] id=%s (%s): result=[%s]", record_id, source_column, abbreviate(translated, 160))
         pending_updates.append((translated, record_id))
 
     if pending_updates:
         if cfg.dry_run:
             for translated, record_id in pending_updates:
-                log.info("[DRY-RUN] id=%s: would update %s -> [%s]", record_id, cfg.japanese_column, abbreviate(translated, 160))
+                log.info(
+                    "[DRY-RUN] id=%s: would update %s -> [%s]",
+                    record_id, target_column, abbreviate(translated, 160),
+                )
         else:
-            batch_update_comments(db, cfg, pending_updates)
-            log.info("[DB] Batch updated %d record(s) in one commit.", len(pending_updates))
+            batch_update_target(db, cfg, target_column, pending_updates)
+            log.info(
+                "[DB] Batch updated %d record(s) for %s in one commit.",
+                len(pending_updates), target_column,
+            )
 
+    return watermark
+
+
+def process_batch(
+    client: LlmClient,
+    cache: TranslationCache,
+    db: DbConnection,
+    cfg: Config,
+    watermark: Watermark,
+) -> Watermark:
+    """Runs one poll cycle across ALL configured (source, target) pairs."""
+    for source_column, target_column in cfg.translate_columns:
+        watermark = process_pair(client, cache, db, cfg, source_column, target_column, watermark)
     return watermark
 
 
@@ -886,7 +938,6 @@ def run() -> None:
     signal.signal(signal.SIGINT, _handle_shutdown)
     signal.signal(signal.SIGTERM, _handle_shutdown)
 
-    # #6 single instance: local file lock first (cheap, fast fail)
     file_lock = FileLockGuard(cfg.lock_file)
     if not file_lock.acquire():
         log.error("[LOCK] Another instance is already running on this host (lock file: %s). Exiting.", cfg.lock_file)
@@ -898,15 +949,15 @@ def run() -> None:
     watermark = load_watermark(cfg.state_file)
 
     try:
-        db.connect()  # also acquires sp_getapplock if enabled
+        db.connect()
     except Exception:
         log.exception("[SERVICE] Could not start (DB connect / app-lock failed).")
         file_lock.release()
         sys.exit(1)
 
     log.info(
-        "[SERVICE] Starting. table=%s, column=%s, watermark=%s/%s, pollInterval=%ss, dryRun=%s",
-        cfg.table_name, cfg.source_column, watermark.last_ts, watermark.last_id,
+        "[SERVICE] Starting. table=%s, pairs=%s, watermark=%s/%s, pollInterval=%ss, dryRun=%s",
+        cfg.table_name, cfg.translate_columns, watermark.last_ts, watermark.last_id,
         cfg.poll_interval_seconds, cfg.dry_run,
     )
 
@@ -932,42 +983,3 @@ def run() -> None:
 
 if __name__ == "__main__":
     run()
-    raise SystemExit(0)
-    TEST_ID = 2927  # đổi 123 thành id cần dịch
-
-    cfg = load_config()
-    setup_logging(cfg)
-
-    db = DbConnection(cfg)
-    cache = TranslationCache(cfg.cache_db_file)
-    client = LlmClient(cfg)
-
-    try:
-        db.connect()
-
-        row = db.cursor().execute(
-            f"SELECT [{cfg.source_column}] "
-            f"FROM [{cfg.table_name}] "
-            f"WHERE [{cfg.id_column}] = ?",
-            TEST_ID,
-        ).fetchone()
-
-        if row is None:
-            print(f"Không tìm thấy id={TEST_ID}")
-        else:
-            original = normalize(row[0])
-            print("Gốc:", original)
-
-            translated = translate_default(client, cache, original)
-            print("Tiếng Nhật:", translated)
-
-            # Test an toàn: DRY_RUN=1 chỉ in kết quả, không ghi DB
-            if cfg.dry_run:
-                print("DRY_RUN=1: chưa cập nhật database.")
-            elif translated != original:
-                batch_update_comments(db, cfg, [(translated, TEST_ID)])
-                print(f"Đã cập nhật comment cho id={TEST_ID}")
-
-    finally:
-        db.close()
-        cache.close()
