@@ -50,6 +50,10 @@ Configuration (environment variables). Required: DB_SERVER, DB_DATABASE.
   LM_URL                 default "http://192.168.122.16:1234"
   LM_API_KEY              default ""
   LM_MODEL               default "openai/gpt-oss-20b"
+  LM_STUDIO_AUTO_RELOAD  default "1". Reload the model when a successful
+                         completion response has missing/empty content.
+  LM_STUDIO_RELOAD_COOLDOWN_SECONDS  default 60
+  LM_STUDIO_RELOAD_UNLOAD_FIRST       default "1"
 
   POLL_INTERVAL_SECONDS  default 5
   BATCH_SIZE              default 20     (rows fetched per pair, per poll)
@@ -81,7 +85,7 @@ import sqlite3
 import sys
 import time
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
 
@@ -89,6 +93,7 @@ import requests
 from requests.adapters import HTTPAdapter
 
 from dotenv import load_dotenv
+from llm_studio_recovery import LmStudioRecovery, is_corrupted_content
 # Đọc file .env
 load_dotenv(override=True)
 
@@ -125,6 +130,14 @@ class Config:
     lm_url: str
     lm_api_key: Optional[str]
     lm_model: str
+    lm_studio_auto_reload: bool
+    lm_studio_reload_cooldown_seconds: float
+    lm_studio_reload_unload_first: bool
+    lm_studio_instance_id: Optional[str]
+    lm_studio_failure_threshold: int
+    lm_studio_reload_lock_file: Path
+    llm_failure_retry_seconds: float
+    llm_failure_retry_max_seconds: float
 
     poll_interval_seconds: float
     batch_size: int
@@ -191,6 +204,14 @@ def load_config() -> Config:
         lm_url=(env("LM_URL", "http://192.168.122.16:1234") or "").rstrip("/"),
         lm_api_key=env("LM_API_KEY"),
         lm_model=env("LM_MODEL", "openai/gpt-oss-20b"),
+        lm_studio_auto_reload=(env("LM_STUDIO_AUTO_RELOAD", "1") or "1").lower() in ("1", "yes", "true"),
+        lm_studio_reload_cooldown_seconds=float(env("LM_STUDIO_RELOAD_COOLDOWN_SECONDS", "60")),
+        lm_studio_reload_unload_first=(env("LM_STUDIO_RELOAD_UNLOAD_FIRST", "1") or "1").lower() in ("1", "yes", "true"),
+        lm_studio_instance_id=env("LM_STUDIO_INSTANCE_ID") or env("LM_MODEL"),
+        lm_studio_failure_threshold=max(1, int(env("LM_STUDIO_FAILURE_THRESHOLD", "3"))),
+        lm_studio_reload_lock_file=Path(env("LM_STUDIO_RELOAD_LOCK_FILE", "./lm_studio_reload.lock")),
+        llm_failure_retry_seconds=float(env("LLM_FAILURE_RETRY_SECONDS", "300")),
+        llm_failure_retry_max_seconds=float(env("LLM_FAILURE_RETRY_MAX_SECONDS", "3600")),
         poll_interval_seconds=float(env("POLL_INTERVAL_SECONDS", "5")),
         batch_size=int(env("BATCH_SIZE", "20")),
         state_file=Path(env("STATE_FILE", "./patrol_translate_state.json")),
@@ -419,6 +440,18 @@ class TranslationCache:
             )
             """
         )
+        self.conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS translation_failures (
+                source_hash TEXT PRIMARY KEY,
+                source_lang TEXT NOT NULL,
+                failure_count INTEGER NOT NULL,
+                retry_after TEXT NOT NULL,
+                last_error TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )
+            """
+        )
         self.conn.commit()
 
     @staticmethod
@@ -446,7 +479,69 @@ class TranslationCache:
             """,
             (key, "ja" if source_is_japanese else "vi", source_text, target_text, datetime.utcnow().isoformat()),
         )
+        self.conn.execute("DELETE FROM translation_failures WHERE source_hash = ?", (key,))
         self.conn.commit()
+
+    def remaining_failure_delay(self, source_text: str, source_is_japanese: bool) -> int:
+        """Return seconds until retry is allowed, or zero when it is allowed."""
+        key = self._key(source_text, source_is_japanese)
+        row = self.conn.execute(
+            "SELECT retry_after FROM translation_failures WHERE source_hash = ?", (key,)
+        ).fetchone()
+        if not row:
+            return 0
+        try:
+            retry_after = datetime.fromisoformat(row[0])
+        except (TypeError, ValueError):
+            self.conn.execute("DELETE FROM translation_failures WHERE source_hash = ?", (key,))
+            self.conn.commit()
+            return 0
+        remaining = (retry_after - datetime.utcnow()).total_seconds()
+        return max(0, int(remaining) + (1 if remaining > 0 else 0))
+
+    def record_failure(
+        self,
+        source_text: str,
+        source_is_japanese: bool,
+        *,
+        base_delay_seconds: float,
+        max_delay_seconds: float,
+        reason: str,
+    ) -> int:
+        """Persist exponential retry delay and return the delay in seconds."""
+        if base_delay_seconds <= 0:
+            return 0
+        key = self._key(source_text, source_is_japanese)
+        row = self.conn.execute(
+            "SELECT failure_count FROM translation_failures WHERE source_hash = ?", (key,)
+        ).fetchone()
+        failure_count = (int(row[0]) if row else 0) + 1
+        delay = base_delay_seconds * (2 ** min(failure_count - 1, 20))
+        delay = int(min(delay, max(max_delay_seconds, base_delay_seconds)))
+        now = datetime.utcnow()
+        retry_after = now + timedelta(seconds=delay)
+        self.conn.execute(
+            """
+            INSERT INTO translation_failures
+                (source_hash, source_lang, failure_count, retry_after, last_error, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?)
+            ON CONFLICT(source_hash) DO UPDATE SET
+                failure_count = excluded.failure_count,
+                retry_after = excluded.retry_after,
+                last_error = excluded.last_error,
+                updated_at = excluded.updated_at
+            """,
+            (
+                key,
+                "ja" if source_is_japanese else "vi",
+                failure_count,
+                retry_after.isoformat(),
+                reason[:300],
+                now.isoformat(),
+            ),
+        )
+        self.conn.commit()
+        return delay
 
     def close(self) -> None:
         try:
@@ -474,6 +569,20 @@ class LlmClient:
         adapter = HTTPAdapter(max_retries=retry)
         self.session.mount("http://", adapter)
         self.session.mount("https://", adapter)
+        self.recovery = LmStudioRecovery(
+            base_url=cfg.lm_url,
+            model_key=cfg.lm_model,
+            api_key=cfg.lm_api_key,
+            enabled=cfg.lm_studio_auto_reload,
+            cooldown_seconds=cfg.lm_studio_reload_cooldown_seconds,
+            timeout_seconds=cfg.request_timeout_seconds,
+            unload_first=cfg.lm_studio_reload_unload_first,
+            logger=log,
+            session=self.session,
+            instance_id=cfg.lm_studio_instance_id,
+            failure_threshold=cfg.lm_studio_failure_threshold,
+            lock_file=cfg.lm_studio_reload_lock_file,
+        )
 
     def _build_payload(self, text: str, source_is_japanese: bool) -> dict:
         system_prompt = japanese_to_vietnamese_prompt() if source_is_japanese else vietnamese_to_japanese_prompt()
@@ -507,10 +616,21 @@ class LlmClient:
 
         if response.status_code == 200:
             result = self._extract_content(response.text)
+            recovery_reason = None
+            if result is None:
+                recovery_reason = "missing or empty choices[0].message.content"
+            elif is_corrupted_content(result):
+                log.warning("[TRANSLATE] LLM returned corrupted content made only of '?' or replacement characters.")
+                result = None
+                recovery_reason = "corrupted content made only of '?' or replacement characters"
             log.info(
                 "[TRANSLATE] Completed in %d ms. inputLength=%d, outputLength=%d",
                 elapsed_ms, len(text), len(result) if result else 0,
             )
+            if recovery_reason:
+                self.recovery.record_invalid_completion(recovery_reason)
+            else:
+                self.recovery.record_success()
             return result
 
         if response.status_code == 429:
@@ -539,6 +659,10 @@ class LlmClient:
                 "[TRANSLATE] Response missing choices[0].message.content. body=%s",
                 abbreviate(response_body, 600),
             )
+            return None
+
+        if content is not None and not isinstance(content, str):
+            log.warning("[TRANSLATE] LLM content has unexpected type: %s", type(content).__name__)
             return None
 
         content = normalize(content)
@@ -594,11 +718,29 @@ def translate_text(
     if cached is not None and is_valid_translation(original, cached, source_is_japanese):
         return cached
 
+    remaining_delay = cache.remaining_failure_delay(original, source_is_japanese)
+    if remaining_delay:
+        log.warning(
+            "[TRANSLATE] Skipping previously failed text for another %ds. text=%s",
+            remaining_delay,
+            abbreviate(original, 160),
+        )
+        return original
+
     translated = normalize(client.translate_with_retry(original, source_is_japanese))
 
     # Lỗi LLM / kết quả không phải tiếng Nhật: không ghi đè raw text.
     if not is_valid_translation(original, translated, source_is_japanese):
+        retry_delay = cache.record_failure(
+            original,
+            source_is_japanese,
+            base_delay_seconds=client.cfg.llm_failure_retry_seconds,
+            max_delay_seconds=client.cfg.llm_failure_retry_max_seconds,
+            reason="LLM returned no valid translation",
+        )
         log.warning("[TRANSLATE] Invalid translation; keeping original text.")
+        if retry_delay:
+            log.warning("[TRANSLATE] Next retry for this text will wait %ds.", retry_delay)
         return original
 
     cache.put(original, source_is_japanese, translated)
