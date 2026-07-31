@@ -1,15 +1,7 @@
 requests==2.32.3
-
-pyodbc==5.1.0
-
+pyodbc==5.2.0
 python-dotenv==1.0.1
-
 langdetect==1.0.9
-
 cachetools==5.3.3
-
 colorlog==6.8.2
-
 tenacity==8.5.0
-
-pywin32==306

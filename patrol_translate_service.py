@@ -26,7 +26,41 @@ try:
 except ImportError:
     pyodbc = None
 
-load_dotenv(override=True)
+import sys
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+
+def get_app_dir() -> Path:
+    """
+    Khi chạy Python:
+        trả về thư mục chứa file .py
+
+    Khi build EXE:
+        trả về thư mục chứa PatrolTranslate.exe
+    """
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent
+
+    return Path(__file__).resolve().parent
+
+
+APP_DIR = get_app_dir()
+ENV_FILE = APP_DIR / ".env"
+
+load_dotenv(
+    dotenv_path=ENV_FILE,
+    override=True,
+)
+
+def resolve_app_path(value: str) -> Path:
+    path = Path(value)
+
+    if path.is_absolute():
+        return path
+
+    return APP_DIR / path
 
 _IDENTIFIER = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 _QUALIFIED_IDENTIFIER = re.compile(
@@ -215,10 +249,15 @@ def load_config() -> Config:
         failure_retry_seconds=max(
             30, int(_env("FAILURE_RETRY_SECONDS", "300") or 300)
         ),
-        cache_db_file=Path(
-            _env("CACHE_DB_FILE", "./patrol_translate_cache.sqlite3") or ""
+        cache_db_file=resolve_app_path(
+            _env(
+                "CACHE_DB_FILE",
+                "patrol_translate_cache.sqlite3",
+            ) or "patrol_translate_cache.sqlite3"
         ),
-        log_dir=Path(_env("LOG_DIR", "./logs") or ""),
+        log_dir=resolve_app_path(
+            _env("LOG_DIR", "logs") or "logs"
+        ),
         log_file_name=_env("LOG_FILE_NAME", "patrol_translate.log") or "",
         log_backup_days=max(1, int(_env("LOG_BACKUP_DAYS", "14") or 14)),
         use_db_applock=_env_bool("USE_DB_APPLOCK", True),
