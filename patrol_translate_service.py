@@ -1,116 +1,41 @@
-"""
-patrol_translate_service.py  (v3)
-
-Background service that watches the F2_Patrol_Report table and, for every
-new/edited record whose SOURCE column is NOT Japanese, calls a local LLM
-(LM Studio / any OpenAI-compatible /v1/chat/completions endpoint) to
-translate it into Japanese, then writes the translation into a separate
-TARGET column (source stays untouched).
-
-Translation logic (prompts, output cleanup, validation, retry policy) is
-UNCHANGED from v1/v2 and mirrors the Java `PatrolCommentService` exactly.
-
---------------------------------------------------------------------
-v3 change: MULTIPLE column pairs in one service.
-
-Instead of a single hard-coded (comment -> comment_japanese) pair, the
-service now reads a list of "source:target" pairs from TRANSLATE_COLUMNS
-and processes all of them every poll cycle, e.g.:
-
-    TRANSLATE_COLUMNS=comment:comment_jp,countermeasure:countermeasure_jp
-
-Each pair is queue-based: a row is considered "pending" for a given pair
-whenever target IS NULL/empty and source IS NOT NULL. This naturally
-covers old rows (no watermark needed) and edited rows (if you ever clear
-the target column, it goes back into the queue).
-
-Everything else (persistent DB connection + reconnect, SQLite translation
-cache, batched UPDATE with executemany() + one commit, daily-rotating
-logs, single-instance guard via file lock + sp_getapplock, requests
-Session with HTTPAdapter/Retry) is unchanged from v2.
---------------------------------------------------------------------
-Configuration (environment variables). Required: DB_SERVER, DB_DATABASE.
-
-  DB_DRIVER              default "{ODBC Driver 17 for SQL Server}"
-  DB_SERVER
-  DB_DATABASE
-  DB_USER / DB_PASSWORD  (omit both if DB_TRUSTED_CONNECTION=yes)
-  DB_TRUSTED_CONNECTION  "yes" for Windows auth
-
-  TABLE_NAME                  default "F2_Patrol_Report"
-  ID_COLUMN                   default "id"
-  CREATED_COLUMN              default "created_at"
-  TRANSLATE_COLUMNS           default "comment:comment_jp,countermeasure:countermeasure_jp"
-                               comma-separated "source:target" pairs, e.g.
-                               "comment:comment_jp,countermeasure:countermeasure_jp"
-  AI_TRANSLATE_UPDATE_COLUMN  default "ai_translate_update_at"
-                               (shared timestamp column, stamped on every
-                               successful write to any target column)
-
-  LM_URL                 default "http://192.168.122.16:1234"
-  LM_API_KEY              default ""
-  LM_MODEL               default "openai/gpt-oss-20b"
-  LM_STUDIO_AUTO_RELOAD  default "1". Reload the model when a successful
-                         completion response has missing/empty content.
-  LM_STUDIO_RELOAD_COOLDOWN_SECONDS  default 60
-  LM_STUDIO_RELOAD_UNLOAD_FIRST       default "1"
-
-  POLL_INTERVAL_SECONDS  default 5
-  BATCH_SIZE              default 20     (rows fetched per pair, per poll)
-  STATE_FILE              default "./patrol_translate_state.json"
-  CACHE_DB_FILE           default "./patrol_translate_cache.sqlite3"
-  LOCK_FILE               default "./patrol_translate.lock"
-  LOG_DIR                 default "./logs"
-  LOG_FILE_NAME           default "patrol_translate.log"
-  LOG_BACKUP_DAYS         default 14
-  USE_DB_APPLOCK          default "1"  (also try sp_getapplock, best-effort)
-  HTTP_MAX_RETRIES        default 3
-  HTTP_BACKOFF_FACTOR     default 0.5
-  DRY_RUN                 "1" to log without writing to DB
-
-Requires: pyodbc, requests, python-dotenv
---------------------------------------------------------------------
-"""
-
 from __future__ import annotations
 
 import hashlib
-import json
 import logging
 import logging.handlers
 import os
 import re
-import signal
 import sqlite3
-import sys
 import time
-from dataclasses import dataclass
-from datetime import datetime, timedelta
+from dataclasses import dataclass, replace
+from datetime import date, datetime, timedelta
 from pathlib import Path
-from typing import Optional
+from typing import Any, Iterable, Optional
 
 import requests
-from requests.adapters import HTTPAdapter
-
 from dotenv import load_dotenv
-from llm_studio_recovery import LmStudioRecovery, is_corrupted_content
-# Đọc file .env
-load_dotenv(override=True)
+from requests.adapters import HTTPAdapter
 
 try:
     from urllib3.util.retry import Retry
-except ImportError:  # pragma: no cover
+except ImportError:
     from requests.packages.urllib3.util.retry import Retry  # type: ignore
 
 try:
     import pyodbc
-except ImportError:  # pragma: no cover
+except ImportError:
     pyodbc = None
 
+load_dotenv(override=True)
 
-# --------------------------------------------------------------------------
-# Config
-# --------------------------------------------------------------------------
+_IDENTIFIER = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+_QUALIFIED_IDENTIFIER = re.compile(
+    r"^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)?$"
+)
+
+# ============================================================
+# Configuration
+# ============================================================
 
 @dataclass(frozen=True)
 class Config:
@@ -124,435 +49,1238 @@ class Config:
     table_name: str
     id_column: str
     created_column: str
-    translate_columns: tuple  # tuple of (source_column, target_column) pairs
-    ai_translate_update_column: str
+    qr_key_column: str
+    
+    date_column_map: dict[str, str]
+    
+    translate_columns: tuple[tuple[str, str], ...]
+    ai_translate_update_column: Optional[str]
+    work_state_table: str
 
     lm_url: str
     lm_api_key: Optional[str]
     lm_model: str
-    lm_studio_auto_reload: bool
-    lm_studio_reload_cooldown_seconds: float
-    lm_studio_reload_unload_first: bool
-    lm_studio_instance_id: Optional[str]
-    lm_studio_failure_threshold: int
-    lm_studio_reload_lock_file: Path
-    llm_failure_retry_seconds: float
-    llm_failure_retry_max_seconds: float
+    connect_timeout_seconds: float
+    request_timeout_seconds: float
+    max_output_tokens: int
+    llm_retry_count: int
+    llm_retry_delay_seconds: float
 
     poll_interval_seconds: float
     batch_size: int
-    state_file: Path
+    failure_retry_seconds: int
     cache_db_file: Path
-    lock_file: Path
     log_dir: Path
     log_file_name: str
     log_backup_days: int
     use_db_applock: bool
-    http_max_retries: int
-    http_backoff_factor: float
     dry_run: bool
 
-    connect_timeout_seconds: float = 10
-    request_timeout_seconds: float = 90
-    max_output_tokens: int = 300
-    max_retry: int = 1  # retry policy for a plain timeout (kept from v1)
+
+def _env(name: str, default: Optional[str] = None) -> Optional[str]:
+    value = os.getenv(name)
+    return default if value is None or value.strip() == "" else value.strip()
 
 
-def _parse_translate_columns(raw: str) -> tuple:
-    """Parse "src1:tgt1,src2:tgt2" into (("src1","tgt1"), ("src2","tgt2"))."""
-    pairs = []
-    for chunk in raw.split(","):
-        chunk = chunk.strip()
-        if not chunk:
+def _env_bool(name: str, default: bool = False) -> bool:
+    raw = _env(name, "1" if default else "0")
+    return str(raw).lower() in {"1", "true", "yes", "y", "on"}
+
+
+def _parse_pairs(raw: str) -> tuple[tuple[str, str], ...]:
+    pairs: list[tuple[str, str]] = []
+    seen: set[tuple[str, str]] = set()
+
+    for part in raw.split(","):
+        part = part.strip()
+        if not part:
             continue
-        if ":" not in chunk:
+        if ":" not in part:
             raise ValueError(
-                f"Invalid TRANSLATE_COLUMNS entry '{chunk}'. Expected 'source:target'."
+                f"TRANSLATE_COLUMNS không hợp lệ: {part!r}. "
+                "Định dạng đúng: source:target,source2:target2"
             )
-        source, target = chunk.split(":", 1)
-        source = source.strip()
-        target = target.strip()
+        source, target = (x.strip() for x in part.split(":", 1))
         if not source or not target:
-            raise ValueError(
-                f"Invalid TRANSLATE_COLUMNS entry '{chunk}'. Expected 'source:target'."
-            )
-        pairs.append((source, target))
+            raise ValueError(f"Cặp cột không hợp lệ: {part!r}")
+        pair = (source, target)
+        if pair not in seen:
+            pairs.append(pair)
+            seen.add(pair)
+
     if not pairs:
-        raise ValueError("TRANSLATE_COLUMNS must contain at least one 'source:target' pair.")
+        raise ValueError("TRANSLATE_COLUMNS phải có ít nhất một cặp cột.")
     return tuple(pairs)
 
+def _parse_date_column_map(raw: str) -> dict[str, str]:
+    result: dict[str, str] = {}
+
+    for part in raw.split(","):
+        part = part.strip()
+        if not part:
+            continue
+
+        if ":" not in part:
+            raise ValueError(
+                f"DATE_COLUMN_MAP không hợp lệ: {part!r}. "
+                "Định dạng đúng: topic:date_column"
+            )
+
+        topic, date_column = (
+            value.strip()
+            for value in part.split(":", 1)
+        )
+
+        if not topic or not date_column:
+            raise ValueError(
+                f"DATE_COLUMN_MAP không hợp lệ: {part!r}"
+            )
+
+        if not _IDENTIFIER.fullmatch(topic):
+            raise ValueError(
+                f"Topic không an toàn trong DATE_COLUMN_MAP: {topic!r}"
+            )
+
+        if not _IDENTIFIER.fullmatch(date_column):
+            raise ValueError(
+                f"Tên cột ngày không an toàn: {date_column!r}"
+            )
+
+        result[topic.lower()] = date_column
+
+    if not result:
+        raise ValueError(
+            "DATE_COLUMN_MAP phải có ít nhất một cấu hình."
+        )
+
+    return result
 
 def load_config() -> Config:
-    def env(name: str, default: Optional[str] = None) -> Optional[str]:
-        value = os.environ.get(name)
-        return value if value not in (None, "") else default
+    default_pairs = (
+        "comment:comment_jp,"
+        "countermeasure:countermeasure_jp,"
+        "at_comment:at_comment_jp,"
+        "hse_comment:hse_comment_jp,"
+        "comment_jp:comment,"
+        "countermeasure_jp:countermeasure,"
+        "at_comment_jp:at_comment,"
+        "hse_comment_jp:hse_comment"
+    )
+    default_date_column_map = (
+        "comment:createdAt,"
+        "countermeasure:createdAt,"
+        "at_comment:at_date,"
+        "hse_comment:hse_date"
+    )
+    cfg = Config(
+        db_driver=_env("DB_DRIVER", "{ODBC Driver 17 for SQL Server}") or "",
+        db_server=_env("DB_SERVER", "") or "",
+        db_database=_env("DB_DATABASE", "") or "",
+        db_user=_env("DB_USER"),
+        db_password=_env("DB_PASSWORD"),
+        db_trusted_connection=_env_bool("DB_TRUSTED_CONNECTION", False),
 
-    return Config(
-        db_driver=env("DB_DRIVER", "{ODBC Driver 17 for SQL Server}"),
-        db_server=env("DB_SERVER", ""),
-        db_database=env("DB_DATABASE", ""),
-        db_user=env("DB_USER"),
-        db_password=env("DB_PASSWORD"),
-        db_trusted_connection=(env("DB_TRUSTED_CONNECTION", "no") or "no").lower() in ("1", "yes", "true"),
-        table_name=env("TABLE_NAME", "F2_Patrol_Report"),
-        id_column=env("ID_COLUMN", "id"),
-        created_column=env("CREATED_COLUMN", "created_at"),
-        translate_columns=_parse_translate_columns(
-            env("TRANSLATE_COLUMNS", "comment:comment_japanese")
+        table_name=_env("TABLE_NAME", "dbo.F2_Patrol_Report") or "",
+        id_column=_env("ID_COLUMN", "id") or "",
+        created_column=_env("CREATED_COLUMN", "createdAt") or "",
+        qr_key_column=_env("QR_KEY_COLUMN", "qr_key") or "",
+        
+        date_column_map=_parse_date_column_map(_env("DATE_COLUMN_MAP",default_date_column_map,) or default_date_column_map),
+        
+        translate_columns=_parse_pairs(
+            _env("TRANSLATE_COLUMNS", default_pairs) or default_pairs
         ),
-        ai_translate_update_column=env("AI_TRANSLATE_UPDATE_COLUMN", "ai_translate_update_at"),
-        lm_url=(env("LM_URL", "http://192.168.122.16:1234") or "").rstrip("/"),
-        lm_api_key=env("LM_API_KEY"),
-        lm_model=env("LM_MODEL", "openai/gpt-oss-20b"),
-        lm_studio_auto_reload=(env("LM_STUDIO_AUTO_RELOAD", "1") or "1").lower() in ("1", "yes", "true"),
-        lm_studio_reload_cooldown_seconds=float(env("LM_STUDIO_RELOAD_COOLDOWN_SECONDS", "60")),
-        lm_studio_reload_unload_first=(env("LM_STUDIO_RELOAD_UNLOAD_FIRST", "1") or "1").lower() in ("1", "yes", "true"),
-        lm_studio_instance_id=env("LM_STUDIO_INSTANCE_ID") or env("LM_MODEL"),
-        lm_studio_failure_threshold=max(1, int(env("LM_STUDIO_FAILURE_THRESHOLD", "3"))),
-        lm_studio_reload_lock_file=Path(env("LM_STUDIO_RELOAD_LOCK_FILE", "./lm_studio_reload.lock")),
-        llm_failure_retry_seconds=float(env("LLM_FAILURE_RETRY_SECONDS", "300")),
-        llm_failure_retry_max_seconds=float(env("LLM_FAILURE_RETRY_MAX_SECONDS", "3600")),
-        poll_interval_seconds=float(env("POLL_INTERVAL_SECONDS", "5")),
-        batch_size=int(env("BATCH_SIZE", "20")),
-        state_file=Path(env("STATE_FILE", "./patrol_translate_state.json")),
-        cache_db_file=Path(env("CACHE_DB_FILE", "./patrol_translate_cache.sqlite3")),
-        lock_file=Path(env("LOCK_FILE", "./patrol_translate.lock")),
-        log_dir=Path(env("LOG_DIR", "./logs")),
-        log_file_name=env("LOG_FILE_NAME", "patrol_translate.log"),
-        log_backup_days=int(env("LOG_BACKUP_DAYS", "14")),
-        use_db_applock=(env("USE_DB_APPLOCK", "1") or "1") in ("1", "true", "True"),
-        http_max_retries=int(env("HTTP_MAX_RETRIES", "3")),
-        http_backoff_factor=float(env("HTTP_BACKOFF_FACTOR", "0.5")),
-        dry_run=(env("DRY_RUN", "0") or "0") in ("1", "true", "True"),
+        ai_translate_update_column=_env(
+            "AI_TRANSLATE_UPDATE_COLUMN", "ai_translate_update_at"
+        ),
+        work_state_table=_env(
+            "WORK_STATE_TABLE", "dbo.PatrolTranslateWorkState"
+        ) or "",
+    
+        lm_url=(_env("LM_URL", "http://127.0.0.1:1234") or "").rstrip("/"),
+        lm_api_key=_env("LM_API_KEY"),
+        lm_model=_env("LM_MODEL", "openai/gpt-oss-20b") or "",
+        connect_timeout_seconds=float(_env("CONNECT_TIMEOUT_SECONDS", "10") or 10),
+        request_timeout_seconds=float(_env("REQUEST_TIMEOUT_SECONDS", "120") or 120),
+        max_output_tokens=int(_env("MAX_OUTPUT_TOKENS", "500") or 500),
+        llm_retry_count=max(0, int(_env("LLM_RETRY_COUNT", "2") or 2)),
+        llm_retry_delay_seconds=max(
+            0.1, float(_env("LLM_RETRY_DELAY_SECONDS", "2") or 2)
+        ),
+
+        poll_interval_seconds=max(
+            2.0, float(_env("POLL_INTERVAL_SECONDS", "5") or 5)
+        ),
+        batch_size=max(1, int(_env("BATCH_SIZE", "20") or 20)),
+        failure_retry_seconds=max(
+            30, int(_env("FAILURE_RETRY_SECONDS", "300") or 300)
+        ),
+        cache_db_file=Path(
+            _env("CACHE_DB_FILE", "./patrol_translate_cache.sqlite3") or ""
+        ),
+        log_dir=Path(_env("LOG_DIR", "./logs") or ""),
+        log_file_name=_env("LOG_FILE_NAME", "patrol_translate.log") or "",
+        log_backup_days=max(1, int(_env("LOG_BACKUP_DAYS", "14") or 14)),
+        use_db_applock=_env_bool("USE_DB_APPLOCK", True),
+        dry_run=_env_bool("DRY_RUN", False),
     )
 
+    if not cfg.db_server:
+        raise ValueError("Thiếu DB_SERVER trong file .env")
+    if not cfg.db_database:
+        raise ValueError("Thiếu DB_DATABASE trong file .env")
+    if not cfg.db_trusted_connection and (not cfg.db_user or not cfg.db_password):
+        raise ValueError(
+            "Cần DB_USER + DB_PASSWORD hoặc DB_TRUSTED_CONNECTION=yes"
+        )
+    return cfg
 
-# --------------------------------------------------------------------------
-# Logging (TimedRotatingFileHandler)
-# --------------------------------------------------------------------------
+
+
+# ============================================================
+# Logging and validation helpers
+# ============================================================
 
 def setup_logging(cfg: Config) -> logging.Logger:
     cfg.log_dir.mkdir(parents=True, exist_ok=True)
-    log_path = cfg.log_dir / cfg.log_file_name
-
     logger = logging.getLogger("patrol_translate")
     logger.setLevel(logging.INFO)
     logger.handlers.clear()
 
-    fmt = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
+    formatter = logging.Formatter(
+        "%(asctime)s [%(levelname)s] %(threadName)s - %(message)s"
+    )
 
     file_handler = logging.handlers.TimedRotatingFileHandler(
-        filename=str(log_path),
+        cfg.log_dir / cfg.log_file_name,
         when="midnight",
         backupCount=cfg.log_backup_days,
         encoding="utf-8",
     )
-    file_handler.setFormatter(fmt)
+    file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 
     console_handler = logging.StreamHandler()
-    console_handler.setFormatter(fmt)
+    console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
-
     return logger
 
 
-log = logging.getLogger("patrol_translate")  # configured by setup_logging() in run()
+log = logging.getLogger("patrol_translate")
 
 
-def abbreviate(value: Optional[str], max_length: int) -> Optional[str]:
+
+
+def _safe_column(name: str) -> str:
+    if not _IDENTIFIER.fullmatch(name):
+        raise ValueError(f"Tên cột không an toàn: {name!r}")
+    return f"[{name}]"
+
+
+def _safe_table(name: str) -> str:
+    if not _QUALIFIED_IDENTIFIER.fullmatch(name):
+        raise ValueError(f"Tên bảng không an toàn: {name!r}")
+    return ".".join(f"[{part}]" for part in name.split("."))
+
+
+def normalize(value: Any) -> Optional[str]:
     if value is None:
         return None
-    return value if len(value) <= max_length else value[:max_length] + "..."
+    text = str(value).replace("\u00a0", " ").strip()
+    return text or None
 
 
-# --------------------------------------------------------------------------
-# Language helpers (UNCHANGED / PatrolCommentService)
-# --------------------------------------------------------------------------
-
-def normalize(value: Optional[str]) -> Optional[str]:
-    if value is None:
-        return None
-    normalized = value.replace("\u00A0", " ").strip()
-    return normalized if normalized else None
+def _is_japanese_column(name: str) -> bool:
+    value = name.lower()
+    return value.endswith(("_jp", "_ja", "_japanese")) or "japanese" in value
 
 
-def is_hiragana(cp: int) -> bool:
-    return 0x3040 <= cp <= 0x309F
-
-
-def is_katakana(cp: int) -> bool:
-    return 0x30A0 <= cp <= 0x30FF
-
-
-def is_cjk(cp: int) -> bool:
-    return 0x4E00 <= cp <= 0x9FFF
-
-
-def contains_japanese(value: Optional[str]) -> bool:
-    if not value:
-        return False
-    return any(is_hiragana(ord(c)) or is_katakana(ord(c)) or is_cjk(ord(c)) for c in value)
-
-
-def is_mostly_japanese(value: Optional[str]) -> bool:
-    if not value:
-        return False
-    letters = [c for c in value if c.isalpha()]
-    if not letters:
-        return False
-    japanese_letters = [c for c in letters if is_hiragana(ord(c)) or is_katakana(ord(c)) or is_cjk(ord(c))]
-    return (len(japanese_letters) * 100 // len(letters)) >= 60
-
-
-def contains_latin_letter(value: Optional[str]) -> bool:
-    if not value:
-        return False
+def _has_japanese(text: str) -> bool:
     return any(
-        c.isalpha() and not (is_hiragana(ord(c)) or is_katakana(ord(c)) or is_cjk(ord(c)))
-        for c in value
+        "\u3040" <= ch <= "\u30ff"
+        or "\u3400" <= ch <= "\u4dbf"
+        or "\u4e00" <= ch <= "\u9fff"
+        for ch in text
     )
 
 
-def should_translate(text: Optional[str]) -> bool:
+def _has_latin_letter(text: str) -> bool:
+    """
+    Nhận diện phần chữ Latin/tiếng Việt.
+
+    Lưu ý: hàm này chỉ dùng kết hợp với kiểm tra "dòng không có tiếng Nhật"
+    để tránh coi mã như PLC trong một câu tiếng Nhật là phần tiếng Việt.
+    """
+    return any(
+        ch.isalpha() and not _has_japanese(ch)
+        for ch in text
+    )
+
+
+def _strip_language_label(line: str) -> str:
+    """
+    Bỏ nhãn ngôn ngữ ở đầu dòng nhưng giữ nguyên nội dung thực tế.
+
+    Ví dụ:
+        VI: Đã hiểu.       -> Đã hiểu.
+        JP: 了解しました。 -> 了解しました。
+    """
+    return re.sub(
+        r"^\s*(?:vi|vn|vietnamese|tiếng\s*việt|"
+        r"ja|jp|japanese|tiếng\s*nhật)\s*[:：\-]\s*",
+        "",
+        line,
+        flags=re.IGNORECASE,
+    ).strip()
+
+
+def _extract_existing_target_text(
+    raw_text: str,
+    target_language: str,
+) -> Optional[str]:
+    """
+    Lấy trực tiếp phần ngôn ngữ đích nếu raw đã chứa song ngữ theo từng dòng.
+
+    Chỉ tái sử dụng khi đồng thời tồn tại:
+    - ít nhất một dòng có ký tự Nhật;
+    - ít nhất một dòng Latin/Việt hoàn toàn không chứa ký tự Nhật.
+
+    Điều kiện này cố tình chặt để tránh trường hợp một câu Nhật có mã Latin
+    như "PLCに異常があります" bị hiểu sai thành đã có sẵn bản tiếng Việt.
+
+    Ví dụ:
+        OK
+        了解しました。
+
+    target_language="vi" -> "OK"
+    target_language="ja" -> "了解しました。"
+    """
+    source = normalize(raw_text)
+    if not source:
+        return None
+
+    normalized = source.replace("\r\n", "\n").replace("\r", "\n")
+    lines = [
+        _strip_language_label(line)
+        for line in normalized.split("\n")
+        if _strip_language_label(line)
+    ]
+
+    if len(lines) < 2:
+        return None
+
+    japanese_lines = [
+        line
+        for line in lines
+        if _has_japanese(line)
+    ]
+
+    vietnamese_lines = [
+        line
+        for line in lines
+        if not _has_japanese(line) and _has_latin_letter(line)
+    ]
+
+    # Raw phải thực sự có cả hai phần ngôn ngữ.
+    if not japanese_lines or not vietnamese_lines:
+        return None
+
+    selected = (
+        japanese_lines
+        if target_language == "ja"
+        else vietnamese_lines
+    )
+
+    result = "\n".join(selected).strip()
+    return result or None
+
+
+def _clean_translation(text: str) -> Optional[str]:
     value = normalize(text)
-    if value is None:
-        return False
-    return any(c.isalpha() for c in value)
+    if not value:
+        return None
+
+    value = re.sub(r"^```(?:json|text)?\s*", "", value, flags=re.I)
+    value = re.sub(r"\s*```$", "", value)
+    value = re.sub(
+        r"^(translation|bản dịch|dịch|japanese|vietnamese)\s*:\s*",
+        "",
+        value,
+        flags=re.I,
+    )
+    value = value.strip().strip('"').strip()
+
+    if not value:
+        return None
+    if set(value) <= {"?", "�", ".", " ", "\n", "\r", "\t"}:
+        return None
+    return value
 
 
-def is_valid_translation(original: str, translated: Optional[str], source_is_japanese: bool) -> bool:
-    source = normalize(original)
-    target = normalize(translated)
-    if source is None or target is None:
-        return False
-    if source.casefold() == target.casefold():
-        return False
-    if source_is_japanese:
-        return contains_latin_letter(target) and not is_mostly_japanese(target)
-    return contains_japanese(target)
+# ============================================================
+# Database
+# ============================================================
+
+class DbConnection:
+    def __init__(self, cfg: Config):
+        if pyodbc is None:
+            raise RuntimeError("Chưa cài pyodbc. Chạy: pip install pyodbc")
+        self.cfg = cfg
+        self.conn = None
+
+    def _connection_string(self) -> str:
+        parts = [
+            f"DRIVER={self.cfg.db_driver}",
+            f"SERVER={self.cfg.db_server}",
+            f"DATABASE={self.cfg.db_database}",
+            "TrustServerCertificate=yes",
+            "MARS_Connection=yes",
+        ]
+        if self.cfg.db_trusted_connection:
+            parts.append("Trusted_Connection=yes")
+        else:
+            parts.extend([
+                f"UID={self.cfg.db_user}",
+                f"PWD={self.cfg.db_password}",
+            ])
+        return ";".join(parts)
+
+    def connect(self) -> None:
+        self.close()
+        self.conn = pyodbc.connect(
+            self._connection_string(),
+            timeout=max(1, int(self.cfg.connect_timeout_seconds)),
+            autocommit=False,
+        )
+        self.conn.timeout = max(1, int(self.cfg.request_timeout_seconds))
+
+    def ensure_connected(self) -> None:
+        if self.conn is None:
+            self.connect()
+            return
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute("SELECT 1")
+            cursor.fetchone()
+            cursor.close()
+        except Exception:
+            self.connect()
+
+    def cursor(self):
+        self.ensure_connected()
+        return self.conn.cursor()
+
+    def commit(self) -> None:
+        if self.conn is not None:
+            self.conn.commit()
+
+    def rollback(self) -> None:
+        if self.conn is not None:
+            try:
+                self.conn.rollback()
+            except Exception:
+                pass
+
+    def close(self) -> None:
+        if self.conn is not None:
+            try:
+                self.conn.close()
+            except Exception:
+                pass
+            self.conn = None
 
 
-_LABEL_PREFIX_RE = re.compile(
-    r"^(translation|translated text|japanese|vietnamese|bản dịch|dịch)\s*:\s*",
-    re.IGNORECASE,
-)
+def ensure_work_state_table(db: DbConnection, cfg: Config) -> None:
+    """
+    Tạo bảng trạng thái nếu chưa có và tự migration TẠI CHỖ nếu bảng cũ
+    thiếu cột (ALTER TABLE ADD + backfill), KHÔNG rename/xóa dữ liệu cũ.
+
+    QUAN TRỌNG: cố tình KHÔNG dùng cách "rename bảng cũ thành *_Legacy rồi
+    tạo bảng mới" vì nó xóa sổ lịch sử failure_count/next_retry_at đang có,
+    khiến mọi bản ghi từng FAILED bị coi là mới và dịch lại từ đầu ngay
+    sau khi migrate — gây tốn LLM call và có thể ghi đè translated_text
+    đang đúng bằng kết quả dịch lại không cần thiết.
+    """
+    table = _safe_table(cfg.work_state_table)
+    object_name = cfg.work_state_table.replace("'", "''")
+
+    sql = f"""
+    SET NOCOUNT ON;
+
+    IF OBJECT_ID(N'{object_name}', N'U') IS NULL
+    BEGIN
+        CREATE TABLE {table} (
+            record_id NVARCHAR(128) NOT NULL,
+            source_column NVARCHAR(128) NOT NULL,
+            target_column NVARCHAR(128) NOT NULL,
+            source_hash CHAR(64) NOT NULL,
+            status NVARCHAR(24) NOT NULL,
+            failure_count INT NOT NULL
+                CONSTRAINT DF_PatrolTranslateFailure DEFAULT 0,
+            next_retry_at DATETIME2 NULL,
+            last_error NVARCHAR(1800) NULL,
+            updated_at DATETIME2 NOT NULL
+                CONSTRAINT DF_PatrolTranslateUpdated
+                DEFAULT SYSUTCDATETIME(),
+            CONSTRAINT PK_PatrolTranslateWorkState
+                PRIMARY KEY (record_id, source_column, target_column)
+        );
+    END;
+
+    IF COL_LENGTH(N'{object_name}', N'record_id') IS NULL
+        ALTER TABLE {table} ADD record_id NVARCHAR(128) NULL;
+
+    IF COL_LENGTH(N'{object_name}', N'source_column') IS NULL
+        ALTER TABLE {table} ADD source_column NVARCHAR(128) NULL;
+
+    IF COL_LENGTH(N'{object_name}', N'target_column') IS NULL
+        ALTER TABLE {table} ADD target_column NVARCHAR(128) NULL;
+
+    IF COL_LENGTH(N'{object_name}', N'source_hash') IS NULL
+        ALTER TABLE {table} ADD source_hash CHAR(64) NULL;
+
+    IF COL_LENGTH(N'{object_name}', N'status') IS NULL
+        ALTER TABLE {table} ADD status NVARCHAR(24) NULL;
+
+    IF COL_LENGTH(N'{object_name}', N'failure_count') IS NULL
+        ALTER TABLE {table} ADD failure_count INT NULL;
+
+    IF COL_LENGTH(N'{object_name}', N'next_retry_at') IS NULL
+        ALTER TABLE {table} ADD next_retry_at DATETIME2 NULL;
+
+    IF COL_LENGTH(N'{object_name}', N'last_error') IS NULL
+        ALTER TABLE {table} ADD last_error NVARCHAR(1800) NULL;
+
+    IF COL_LENGTH(N'{object_name}', N'updated_at') IS NULL
+        ALTER TABLE {table} ADD updated_at DATETIME2 NULL;
+
+    UPDATE {table}
+       SET source_hash = REPLICATE('0', 64)
+     WHERE source_hash IS NULL
+        OR LTRIM(RTRIM(source_hash)) = '';
+
+    UPDATE {table}
+       SET status = N'PENDING'
+     WHERE status IS NULL
+        OR LTRIM(RTRIM(status)) = N'';
+
+    UPDATE {table}
+       SET failure_count = 0
+     WHERE failure_count IS NULL;
+
+    UPDATE {table}
+       SET updated_at = SYSUTCDATETIME()
+     WHERE updated_at IS NULL;
+    """
+
+    cursor = db.cursor()
+    try:
+        cursor.execute(sql)
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        cursor.close()
 
 
-def clean_model_output(value: str) -> Optional[str]:
-    result = value.replace("```text", "").replace("```json", "").replace("```", "").strip()
-    result = _LABEL_PREFIX_RE.sub("", result).strip()
-
-    if len(result) >= 2:
-        if (result.startswith('"') and result.endswith('"')) or (
-            result.startswith("'") and result.endswith("'")
-        ):
-            result = result[1:-1].strip()
-
-    return normalize(result)
-
-
-# --------------------------------------------------------------------------
-# Prompts (UNCHANGED)
-# --------------------------------------------------------------------------
-
-def vietnamese_to_japanese_prompt() -> str:
-    return """You are a professional Vietnamese-to-Japanese translator
-for factory safety patrols, 5S audits, and manufacturing reports.
-
-Mandatory rules:
-
-1. Translate the input into natural, professional Japanese
-   used in Japanese manufacturing factories.
-
-2. The input can be Vietnamese, English, or mixed Vietnamese-English.
-
-3. Vietnamese without proper diacritics must be interpreted
-   and corrected according to the safety context before translation.
-
-4. Correct obvious Vietnamese spelling mistakes based on context.
-   Example: "do nga" in a safety report means "do nga" (fell over).
-
-5. Preserve factory abbreviations and identifiers such as:
-   MTC, PLC, HSE, QA, QR, 5S, machine codes, area codes,
-   equipment codes, model names, and part numbers.
-
-6. Preserve technical meanings related to safety, machinery,
-   production, tools, work areas, risk levels, falling,
-   overturning, slipping, collision, electric shock,
-   fire, leakage, and mechanical hazards.
-
-7. Never return the original Vietnamese or English sentence unchanged.
-
-8. Return only the final Japanese translation.
-
-9. Do not return JSON, Markdown, explanations, labels,
-   language names, quotes, or the original text.
-"""
+def acquire_db_lock(db: DbConnection, cfg: Config) -> bool:
+    if not cfg.use_db_applock:
+        return True
+    cursor = db.cursor()
+    try:
+        cursor.execute(
+            """
+            DECLARE @result INT;
+            EXEC @result = sp_getapplock
+                @Resource = ?,
+                @LockMode = 'Exclusive',
+                @LockOwner = 'Session',
+                @LockTimeout = 0;
+            SELECT @result;
+            """,
+            "PatrolTranslateService",
+        )
+        value = cursor.fetchone()[0]
+        return int(value) >= 0
+    finally:
+        cursor.close()
 
 
-def japanese_to_vietnamese_prompt() -> str:
-    return """You are a professional Japanese-to-Vietnamese translator
-for factory safety patrols, 5S audits, and manufacturing reports.
+def _canonical_topic(column_name: str) -> str:
+    value = column_name.strip().lower()
 
-Mandatory rules:
+    suffixes = (
+        "_japanese",
+        "_jp",
+        "_ja",
+        "_vietnamese",
+        "_vi",
+    )
 
-1. Translate the Japanese input into natural Vietnamese
-   with correct diacritics.
+    for suffix in suffixes:
+        if value.endswith(suffix):
+            value = value[:-len(suffix)]
+            break
 
-2. Preserve factory abbreviations and identifiers such as:
-   MTC, PLC, HSE, QA, QR, 5S, machine codes, area codes,
-   equipment codes, model names, and part numbers.
+    return value
 
-3. Preserve the technical meaning used in safety,
-   machinery, manufacturing, production, and 5S reports.
+def _date_column_for_pair(
+    cfg: Config,
+    source_column: str,
+    target_column: str,
+) -> str:
+    source_topic = _canonical_topic(source_column)
+    target_topic = _canonical_topic(target_column)
 
-4. Never return the original Japanese sentence unchanged.
+    date_column = cfg.date_column_map.get(source_topic)
 
-5. Return only the final Vietnamese translation.
+    if date_column:
+        return date_column
 
-6. Do not return JSON, Markdown, explanations, labels,
-   language names, quotes, or the original text.
-"""
+    date_column = cfg.date_column_map.get(target_topic)
+
+    if date_column:
+        return date_column
+
+    return cfg.created_column
+
+def _date_condition(
+    date_column: str,
+    date_from: Optional[date],
+    date_to: Optional[date],
+) -> tuple[str, list[Any]]:
+    if date_from is None or date_to is None:
+        return "", []
+
+    start = datetime.combine(
+        date_from,
+        datetime.min.time(),
+    )
+
+    end = datetime.combine(
+        date_to + timedelta(days=1),
+        datetime.min.time(),
+    )
+
+    safe_date_column = _safe_column(date_column)
+
+    return (
+        f" AND p.{safe_date_column} >= ?"
+        f" AND p.{safe_date_column} < ?",
+        [start, end],
+    )
 
 
-# --------------------------------------------------------------------------
-# Translation cache (SQLite)
-# --------------------------------------------------------------------------
+def fetch_records_for_review(
+    db: DbConnection,
+    cfg: Config,
+    pairs: Iterable[tuple[str, str]],
+    date_from: Optional[date],
+    date_to: Optional[date],
+    pending_only: bool = False,
+    limit: int = 1000,
+) -> list[dict[str, Any]]:
+    table = _safe_table(cfg.table_name)
+    id_col = _safe_column(cfg.id_column)
+    qr_col = _safe_column(cfg.qr_key_column)
+
+    output: list[dict[str, Any]] = []
+
+    for source, target in pairs:
+        source_col = _safe_column(source)
+        target_col = _safe_column(target)
+
+        date_column = _date_column_for_pair(
+            cfg,
+            source,
+            target,
+        )
+        date_col = _safe_column(date_column)
+
+        date_sql, date_params = _date_condition(
+            date_column,
+            date_from,
+            date_to,
+        )
+
+        pending_sql = (
+            f"""
+            AND NULLIF(
+                LTRIM(
+                    RTRIM(
+                        CONVERT(
+                            NVARCHAR(MAX),
+                            p.{target_col}
+                        )
+                    )
+                ),
+                ''
+            ) IS NULL
+            """
+            if pending_only
+            else ""
+        )
+
+        sql = f"""
+        SELECT TOP ({int(limit)})
+            CONVERT(
+                NVARCHAR(128),
+                p.{id_col}
+            ) AS record_id,
+
+            p.{date_col} AS created_at,
+
+            CONVERT(
+                NVARCHAR(255),
+                p.{qr_col}
+            ) AS qr_key,
+
+            CONVERT(
+                NVARCHAR(MAX),
+                p.{source_col}
+            ) AS source_text,
+
+            CONVERT(
+                NVARCHAR(MAX),
+                p.{target_col}
+            ) AS target_text
+
+        FROM {table} p
+
+        WHERE NULLIF(
+            LTRIM(
+                RTRIM(
+                    CONVERT(
+                        NVARCHAR(MAX),
+                        p.{source_col}
+                    )
+                )
+            ),
+            ''
+        ) IS NOT NULL
+
+          {pending_sql}
+          {date_sql}
+
+        ORDER BY
+            p.{date_col} DESC,
+            p.{id_col} DESC
+        """
+
+        cursor = db.cursor()
+
+        try:
+            cursor.execute(sql, date_params)
+
+            for row in cursor.fetchall():
+                output.append({
+                    "record_id": row.record_id,
+                    "created_at": row.created_at,
+                    "date_column": date_column,
+                    "qr_key": normalize(row.qr_key) or "",
+                    "source_column": source,
+                    "target_column": target,
+                    "source": normalize(row.source_text),
+                    "target": normalize(row.target_text),
+                })
+        finally:
+            cursor.close()
+
+    return output
+
+def fetch_pending(
+    db: DbConnection,
+    cfg: Config,
+    source_column: str,
+    target_column: str,
+    date_from: Optional[date] = None,
+    date_to: Optional[date] = None,
+    selected_ids: Optional[Iterable[Any]] = None,
+    batch_size: Optional[int] = None,
+) -> list[dict[str, Any]]:
+    table = _safe_table(cfg.table_name)
+    state_table = _safe_table(cfg.work_state_table)
+
+    id_col = _safe_column(cfg.id_column)
+    qr_col = _safe_column(cfg.qr_key_column)
+    source_col = _safe_column(source_column)
+    target_col = _safe_column(target_column)
+
+    date_column = _date_column_for_pair(
+        cfg,
+        source_column,
+        target_column,
+    )
+    date_col = _safe_column(date_column)
+
+    date_sql, params = _date_condition(
+        date_column,
+        date_from,
+        date_to,
+    )
+
+    id_sql = ""
+    ids = [str(value) for value in (selected_ids or [])]
+
+    if ids:
+        placeholders = ",".join("?" for _ in ids)
+        id_sql = (
+            f" AND CONVERT(NVARCHAR(128), p.{id_col})"
+            f" IN ({placeholders})"
+        )
+        params.extend(ids)
+
+    top = int(batch_size or cfg.batch_size)
+
+    sql = f"""
+    SELECT TOP ({top})
+        CONVERT(
+            NVARCHAR(128),
+            p.{id_col}
+        ) AS record_id,
+
+        p.{date_col} AS created_at,
+
+        CONVERT(
+            NVARCHAR(255),
+            p.{qr_col}
+        ) AS qr_key,
+
+        CONVERT(
+            NVARCHAR(MAX),
+            p.{source_col}
+        ) AS source_text,
+
+        CONVERT(
+            NVARCHAR(MAX),
+            p.{target_col}
+        ) AS target_text
+
+    FROM {table} p
+
+    LEFT JOIN {state_table} ws
+      ON ws.record_id =
+         CONVERT(NVARCHAR(128), p.{id_col})
+     AND ws.source_column = ?
+     AND ws.target_column = ?
+
+    WHERE NULLIF(
+        LTRIM(
+            RTRIM(
+                CONVERT(
+                    NVARCHAR(MAX),
+                    p.{source_col}
+                )
+            )
+        ),
+        ''
+    ) IS NOT NULL
+
+      AND NULLIF(
+        LTRIM(
+            RTRIM(
+                CONVERT(
+                    NVARCHAR(MAX),
+                    p.{target_col}
+                )
+            )
+        ),
+        ''
+      ) IS NULL
+
+      AND (
+          ws.record_id IS NULL
+
+          OR ws.source_hash <> CONVERT(
+              VARCHAR(64),
+              HASHBYTES(
+                  'SHA2_256',
+                  CONVERT(
+                      VARBINARY(MAX),
+                      CONVERT(
+                          NVARCHAR(MAX),
+                          p.{source_col}
+                      )
+                  )
+              ),
+              2
+          )
+
+          OR ws.next_retry_at IS NULL
+          OR ws.next_retry_at <= SYSUTCDATETIME()
+      )
+
+      {date_sql}
+      {id_sql}
+
+    ORDER BY
+        p.{date_col},
+        p.{id_col}
+    """
+
+    cursor = db.cursor()
+
+    try:
+        cursor.execute(
+            sql,
+            [
+                source_column,
+                target_column,
+                *params,
+            ],
+        )
+
+        rows = []
+
+        for row in cursor.fetchall():
+            rows.append({
+                "record_id": row.record_id,
+                "created_at": row.created_at,
+                "date_column": date_column,
+                "qr_key": normalize(row.qr_key) or "",
+                "source_column": source_column,
+                "target_column": target_column,
+                "source": normalize(row.source_text),
+                "target": normalize(row.target_text),
+            })
+
+        return rows
+
+    finally:
+        cursor.close()
+
+def update_target(
+    db: DbConnection,
+    cfg: Config,
+    record_id: Any,
+    target_column: str,
+    translated_text: str,
+) -> bool:
+    table = _safe_table(cfg.table_name)
+    id_col = _safe_column(cfg.id_column)
+    target_col = _safe_column(target_column)
+
+    update_stamp = ""
+    if cfg.ai_translate_update_column:
+        update_stamp = (
+            f", {_safe_column(cfg.ai_translate_update_column)} = SYSUTCDATETIME()"
+        )
+
+    sql = f"""
+    UPDATE {table}
+       SET {target_col} = ? {update_stamp}
+     WHERE CONVERT(NVARCHAR(128), {id_col}) = ?
+       AND NULLIF(LTRIM(RTRIM(CONVERT(NVARCHAR(MAX), {target_col}))), '') IS NULL
+    """
+    cursor = db.cursor()
+    try:
+        cursor.execute(sql, translated_text, str(record_id))
+        changed = cursor.rowcount > 0
+        db.commit()
+        return changed
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        cursor.close()
+
+
+
+def read_target_value(
+    db: DbConnection,
+    cfg: Config,
+    record_id: Any,
+    target_column: str,
+) -> tuple[bool, Optional[str]]:
+    """
+    Đọc lại target ngay sau khi UPDATE trả rowcount=0.
+
+    Trả về:
+      - (False, None): không còn record trong DB.
+      - (True, None): record còn tồn tại nhưng target vẫn trống.
+      - (True, value): target đã có dữ liệu (có thể do tiến trình khác ghi).
+    """
+    table = _safe_table(cfg.table_name)
+    id_col = _safe_column(cfg.id_column)
+    target_col = _safe_column(target_column)
+
+    sql = f"""
+    SELECT TOP (1)
+        CONVERT(NVARCHAR(MAX), {target_col}) AS target_text
+    FROM {table}
+    WHERE CONVERT(NVARCHAR(128), {id_col}) = ?
+    """
+
+    cursor = db.cursor()
+    try:
+        cursor.execute(sql, str(record_id))
+        row = cursor.fetchone()
+        if row is None:
+            return False, None
+        return True, normalize(row.target_text)
+    finally:
+        cursor.close()
+
+def batch_update_target(
+    db: DbConnection,
+    cfg: Config,
+    target_column: str,
+    updates: Iterable[tuple[str, Any]],
+) -> int:
+    count = 0
+    for translated_text, record_id in updates:
+        if update_target(db, cfg, record_id, target_column, translated_text):
+            count += 1
+    return count
+
+
+def _source_hash(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def clear_work_state(
+    db: DbConnection,
+    cfg: Config,
+    record_id: Any,
+    source_column: str,
+    target_column: str,
+) -> None:
+    table = _safe_table(cfg.work_state_table)
+    cursor = db.cursor()
+    try:
+        cursor.execute(
+            f"""
+            DELETE FROM {table}
+             WHERE record_id = ?
+               AND source_column = ?
+               AND target_column = ?
+            """,
+            str(record_id),
+            source_column,
+            target_column,
+        )
+        db.commit()
+    finally:
+        cursor.close()
+
+
+def defer_failed_record(
+    db: DbConnection,
+    cfg: Config,
+    record_id: Any,
+    source_column: str,
+    target_column: str,
+    source_text: str,
+    error: str,
+) -> None:
+    table = _safe_table(cfg.work_state_table)
+    next_retry = datetime.utcnow() + timedelta(seconds=cfg.failure_retry_seconds)
+    cursor = db.cursor()
+    try:
+        cursor.execute(
+            f"""
+            MERGE {table} AS target
+            USING (
+                SELECT
+                    ? AS record_id,
+                    ? AS source_column,
+                    ? AS target_column
+            ) AS source
+            ON target.record_id = source.record_id
+               AND target.source_column = source.source_column
+               AND target.target_column = source.target_column
+            WHEN MATCHED THEN
+                UPDATE SET
+                    source_hash = ?,
+                    status = 'FAILED',
+                    failure_count = target.failure_count + 1,
+                    next_retry_at = ?,
+                    last_error = ?,
+                    updated_at = SYSUTCDATETIME()
+            WHEN NOT MATCHED THEN
+                INSERT (
+                    record_id, source_column, target_column, source_hash,
+                    status, failure_count, next_retry_at, last_error, updated_at
+                )
+                VALUES (?, ?, ?, ?, 'FAILED', 1, ?, ?, SYSUTCDATETIME());
+            """,
+            str(record_id), source_column, target_column,
+            _source_hash(source_text), next_retry, error[:1800],
+            str(record_id), source_column, target_column,
+            _source_hash(source_text), next_retry, error[:1800],
+        )
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    finally:
+        cursor.close()
+
+
+# ============================================================
+# Cache and LLM client
+# ============================================================
 
 class TranslationCache:
-    """SQLite-backed cache of source-text -> translated-text, keyed by a
-    hash of (source language flag + normalized source text). Shared across
-    all column pairs on purpose: the same phrase appearing in `comment` and
-    `countermeasure` only needs to be translated once."""
+    REQUIRED_COLUMNS = {
+        "cache_key",
+        "source_text",
+        "target_language",
+        "translated_text",
+        "created_at",
+    }
 
-    def __init__(self, db_file: Path):
-        self.db_file = db_file
-        self.conn = sqlite3.connect(str(db_file))
+    def __init__(self, path: Path):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        self.path = path
+        self.conn = sqlite3.connect(
+            path,
+            check_same_thread=False,
+            timeout=30,
+        )
+        # WAL giúp giảm khóa DB khi service vừa đọc vừa ghi cache liên tục.
+        self.conn.execute("PRAGMA journal_mode=WAL")
+        self.conn.execute("PRAGMA busy_timeout=30000")
+        self._ensure_schema()
+
+    def _table_exists(self, table_name: str) -> bool:
+        row = self.conn.execute(
+            """
+            SELECT 1
+            FROM sqlite_master
+            WHERE type = 'table'
+              AND name = ?
+            """,
+            (table_name,),
+        ).fetchone()
+        return row is not None
+
+    def _columns(self, table_name: str) -> set[str]:
+        return {
+            str(row[1])
+            for row in self.conn.execute(
+                f'PRAGMA table_info("{table_name}")'
+            ).fetchall()
+        }
+
+    def _create_table(self) -> None:
         self.conn.execute(
             """
             CREATE TABLE IF NOT EXISTS translations (
-                source_hash TEXT PRIMARY KEY,
-                source_lang TEXT NOT NULL,
+                cache_key TEXT PRIMARY KEY,
                 source_text TEXT NOT NULL,
-                target_text TEXT NOT NULL,
+                target_language TEXT NOT NULL,
+                translated_text TEXT NOT NULL,
                 created_at TEXT NOT NULL
             )
             """
         )
         self.conn.execute(
             """
-            CREATE TABLE IF NOT EXISTS translation_failures (
-                source_hash TEXT PRIMARY KEY,
-                source_lang TEXT NOT NULL,
-                failure_count INTEGER NOT NULL,
-                retry_after TEXT NOT NULL,
-                last_error TEXT NOT NULL,
-                updated_at TEXT NOT NULL
-            )
+            CREATE INDEX IF NOT EXISTS
+                idx_translations_language_created
+            ON translations(target_language, created_at)
             """
         )
         self.conn.commit()
+
+    def _ensure_schema(self) -> None:
+        """
+        Nếu cache cũ thiếu cột, giữ lại dưới tên legacy và tạo cache mới.
+        (Cache dịch không mang tính trạng thái nghiệp vụ then chốt, nên
+        backup-rename ở đây chấp nhận được và giữ code đơn giản.)
+        """
+        if not self._table_exists("translations"):
+            self._create_table()
+            return
+
+        columns = self._columns("translations")
+        if self.REQUIRED_COLUMNS.issubset(columns):
+            self._create_table()
+            return
+
+        suffix = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+        legacy_name = f"translations_legacy_{suffix}"
+        counter = 1
+
+        while self._table_exists(legacy_name):
+            legacy_name = f"translations_legacy_{suffix}_{counter}"
+            counter += 1
+
+        self.conn.execute(
+            f'ALTER TABLE "translations" RENAME TO "{legacy_name}"'
+        )
+        self.conn.commit()
+        self._create_table()
+
+        log.warning(
+            "Cache SQLite cũ đã được đổi tên thành %s; "
+            "đã tạo bảng translations mới.",
+            legacy_name,
+        )
 
     @staticmethod
-    def _key(source_text: str, source_is_japanese: bool) -> str:
-        lang_flag = "ja" if source_is_japanese else "vi"
-        payload = f"{lang_flag}:{source_text}".encode("utf-8")
-        return hashlib.sha256(payload).hexdigest()
+    def _key(source_text: str, target_language: str) -> str:
+        raw = f"{target_language}\n{source_text}".encode("utf-8")
+        return hashlib.sha256(raw).hexdigest()
 
-    def get(self, source_text: str, source_is_japanese: bool) -> Optional[str]:
-        key = self._key(source_text, source_is_japanese)
-        row = self.conn.execute(
-            "SELECT target_text FROM translations WHERE source_hash = ?", (key,)
-        ).fetchone()
-        return row[0] if row else None
-
-    def put(self, source_text: str, source_is_japanese: bool, target_text: str) -> None:
-        key = self._key(source_text, source_is_japanese)
-        self.conn.execute(
-            """
-            INSERT INTO translations (source_hash, source_lang, source_text, target_text, created_at)
-            VALUES (?, ?, ?, ?, ?)
-            ON CONFLICT(source_hash) DO UPDATE SET
-                target_text = excluded.target_text,
-                created_at = excluded.created_at
-            """,
-            (key, "ja" if source_is_japanese else "vi", source_text, target_text, datetime.utcnow().isoformat()),
-        )
-        self.conn.execute("DELETE FROM translation_failures WHERE source_hash = ?", (key,))
-        self.conn.commit()
-
-    def remaining_failure_delay(self, source_text: str, source_is_japanese: bool) -> int:
-        """Return seconds until retry is allowed, or zero when it is allowed."""
-        key = self._key(source_text, source_is_japanese)
-        row = self.conn.execute(
-            "SELECT retry_after FROM translation_failures WHERE source_hash = ?", (key,)
-        ).fetchone()
-        if not row:
-            return 0
+    def get(self, source_text: str, target_language: str) -> Optional[str]:
         try:
-            retry_after = datetime.fromisoformat(row[0])
-        except (TypeError, ValueError):
-            self.conn.execute("DELETE FROM translation_failures WHERE source_hash = ?", (key,))
-            self.conn.commit()
-            return 0
-        remaining = (retry_after - datetime.utcnow()).total_seconds()
-        return max(0, int(remaining) + (1 if remaining > 0 else 0))
+            row = self.conn.execute(
+                """
+                SELECT translated_text
+                FROM translations
+                WHERE cache_key = ?
+                """,
+                (self._key(source_text, target_language),),
+            ).fetchone()
+            return normalize(row[0]) if row else None
+        except sqlite3.DatabaseError as exc:
+            log.warning("Không đọc được cache, bỏ qua cache: %s", exc)
+            return None
 
-    def record_failure(
+    def put(
         self,
         source_text: str,
-        source_is_japanese: bool,
-        *,
-        base_delay_seconds: float,
-        max_delay_seconds: float,
-        reason: str,
-    ) -> int:
-        """Persist exponential retry delay and return the delay in seconds."""
-        if base_delay_seconds <= 0:
-            return 0
-        key = self._key(source_text, source_is_japanese)
-        row = self.conn.execute(
-            "SELECT failure_count FROM translation_failures WHERE source_hash = ?", (key,)
-        ).fetchone()
-        failure_count = (int(row[0]) if row else 0) + 1
-        delay = base_delay_seconds * (2 ** min(failure_count - 1, 20))
-        delay = int(min(delay, max(max_delay_seconds, base_delay_seconds)))
-        now = datetime.utcnow()
-        retry_after = now + timedelta(seconds=delay)
-        self.conn.execute(
-            """
-            INSERT INTO translation_failures
-                (source_hash, source_lang, failure_count, retry_after, last_error, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?)
-            ON CONFLICT(source_hash) DO UPDATE SET
-                failure_count = excluded.failure_count,
-                retry_after = excluded.retry_after,
-                last_error = excluded.last_error,
-                updated_at = excluded.updated_at
-            """,
-            (
-                key,
-                "ja" if source_is_japanese else "vi",
-                failure_count,
-                retry_after.isoformat(),
-                reason[:300],
-                now.isoformat(),
-            ),
-        )
-        self.conn.commit()
-        return delay
+        target_language: str,
+        translated_text: str,
+    ) -> None:
+        try:
+            self.conn.execute(
+                """
+                INSERT INTO translations (
+                    cache_key,
+                    source_text,
+                    target_language,
+                    translated_text,
+                    created_at
+                )
+                VALUES (?, ?, ?, ?, ?)
+                ON CONFLICT(cache_key) DO UPDATE SET
+                    source_text = excluded.source_text,
+                    target_language = excluded.target_language,
+                    translated_text = excluded.translated_text,
+                    created_at = excluded.created_at
+                """,
+                (
+                    self._key(source_text, target_language),
+                    source_text,
+                    target_language,
+                    translated_text,
+                    datetime.utcnow().isoformat(timespec="seconds"),
+                ),
+            )
+            self.conn.commit()
+        except sqlite3.DatabaseError as exc:
+            log.warning("Không ghi được cache, tiếp tục không dùng cache: %s", exc)
 
     def close(self) -> None:
         try:
             self.conn.close()
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass
 
-
-# --------------------------------------------------------------------------
-# LLM client (Session + HTTPAdapter + Retry)
-# --------------------------------------------------------------------------
 
 class LlmClient:
     def __init__(self, cfg: Config):
@@ -560,568 +1288,542 @@ class LlmClient:
         self.session = requests.Session()
 
         retry = Retry(
-            total=cfg.http_max_retries,
-            status_forcelist=[429, 500, 502, 503, 504],
+            total=cfg.llm_retry_count,
+            connect=cfg.llm_retry_count,
+            read=0,
+            status=cfg.llm_retry_count,
+            backoff_factor=0.5,
+            status_forcelist=(429, 500, 502, 503, 504),
             allowed_methods=frozenset(["POST"]),
-            backoff_factor=cfg.http_backoff_factor,
             raise_on_status=False,
         )
         adapter = HTTPAdapter(max_retries=retry)
         self.session.mount("http://", adapter)
         self.session.mount("https://", adapter)
-        self.recovery = LmStudioRecovery(
-            base_url=cfg.lm_url,
-            model_key=cfg.lm_model,
-            api_key=cfg.lm_api_key,
-            enabled=cfg.lm_studio_auto_reload,
-            cooldown_seconds=cfg.lm_studio_reload_cooldown_seconds,
-            timeout_seconds=cfg.request_timeout_seconds,
-            unload_first=cfg.lm_studio_reload_unload_first,
-            logger=log,
-            session=self.session,
-            instance_id=cfg.lm_studio_instance_id,
-            failure_threshold=cfg.lm_studio_failure_threshold,
-            lock_file=cfg.lm_studio_reload_lock_file,
-        )
 
-    def _build_payload(self, text: str, source_is_japanese: bool) -> dict:
-        system_prompt = japanese_to_vietnamese_prompt() if source_is_japanese else vietnamese_to_japanese_prompt()
-        return {
+    def _headers(self) -> dict[str, str]:
+        headers = {"Content-Type": "application/json"}
+        if self.cfg.lm_api_key:
+            headers["Authorization"] = f"Bearer {self.cfg.lm_api_key}"
+        return headers
+
+    def _prompt(self, source_text: str, target_language: str) -> list[dict[str, str]]:
+        if target_language == "ja":
+            system = (
+                "Bạn là biên dịch viên HSE nhà máy. "
+                "Dịch chính xác nội dung tiếng Việt sang tiếng Nhật tự nhiên, "
+                "ngắn gọn, giữ nguyên tên máy, mã, số liệu và ký hiệu. "
+                "Chỉ trả về bản dịch, không giải thích, không suy luận. "
+                "Nếu văn bản là mã, viết tắt, số hiệu hoặc không cần dịch, "
+                "hãy trả về chính văn bản gốc nguyên vẹn — TUYỆT ĐỐI KHÔNG "
+                "được để trống câu trả lời."
+            )
+        else:
+            system = (
+                "Bạn là biên dịch viên HSE nhà máy. "
+                "Dịch chính xác nội dung tiếng Nhật sang tiếng Việt tự nhiên, "
+                "ngắn gọn, giữ nguyên tên máy, mã, số liệu và ký hiệu. "
+                "Chỉ trả về bản dịch, không giải thích, không suy luận. "
+                "Nếu văn bản là mã, viết tắt, số hiệu hoặc không cần dịch, "
+                "hãy trả về chính văn bản gốc nguyên vẹn — TUYỆT ĐỐI KHÔNG "
+                "được để trống câu trả lời."
+            )
+        return [
+            {"role": "system", "content": system},
+            {"role": "user", "content": source_text},
+        ]
+
+    def translate(self, source_text: str, target_language: str) -> str:
+        """
+        Gọi LLM và trích xuất nội dung dịch.
+
+        Một số server OpenAI-compatible (đặc biệt các model dạng reasoning
+        như gpt-oss) có thể trả `content` dưới dạng list thay vì string,
+        hoặc đặt nội dung thực tế trong `reasoning_content` / `reasoning`
+        thay vì `content`. Vì vậy cần thử qua nhiều field theo thứ tự ưu
+        tiên thay vì chỉ đọc `message.content` như một chuỗi đơn thuần.
+        """
+        payload = {
             "model": self.cfg.lm_model,
+            "messages": self._prompt(source_text, target_language),
             "temperature": 0.1,
             "max_tokens": self.cfg.max_output_tokens,
             "stream": False,
-            "messages": [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": text},
-            ],
         }
 
-    def _call_once(self, text: str, source_is_japanese: bool) -> Optional[str]:
-        payload = self._build_payload(text, source_is_japanese)
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-        if self.cfg.lm_api_key:
-            headers["Authorization"] = f"Bearer {self.cfg.lm_api_key}"
-
-        url = f"{self.cfg.lm_url}/v1/chat/completions"
-        started = time.monotonic()
-
-        response = self.session.post(
-            url,
-            json=payload,
-            headers=headers,
-            timeout=(self.cfg.connect_timeout_seconds, self.cfg.request_timeout_seconds),
-        )
-        elapsed_ms = int((time.monotonic() - started) * 1000)
-
-        if response.status_code == 200:
-            result = self._extract_content(response.text)
-            recovery_reason = None
-            if result is None:
-                recovery_reason = "missing or empty choices[0].message.content"
-            elif is_corrupted_content(result):
-                log.warning("[TRANSLATE] LLM returned corrupted content made only of '?' or replacement characters.")
-                result = None
-                recovery_reason = "corrupted content made only of '?' or replacement characters"
-            log.info(
-                "[TRANSLATE] Completed in %d ms. inputLength=%d, outputLength=%d",
-                elapsed_ms, len(text), len(result) if result else 0,
-            )
-            if recovery_reason:
-                self.recovery.record_invalid_completion(recovery_reason)
-            else:
-                self.recovery.record_success()
-            return result
-
-        if response.status_code == 429:
-            log.warning("[TRANSLATE] LLM rate limited after retries. status=429, elapsedMs=%d", elapsed_ms)
-            return None
-
-        log.warning(
-            "[TRANSLATE] LLM returned error. status=%d, elapsedMs=%d, body=%s",
-            response.status_code, elapsed_ms, abbreviate(response.text, 600),
-        )
-        return None
-
-    def _extract_content(self, response_body: str) -> Optional[str]:
-        if not response_body or not response_body.strip():
-            return None
-        try:
-            root = json.loads(response_body)
-        except json.JSONDecodeError:
-            log.warning("[TRANSLATE] Could not parse LLM response body as JSON.")
-            return None
-
-        try:
-            content = root["choices"][0]["message"]["content"]
-        except (KeyError, IndexError, TypeError):
-            log.warning(
-                "[TRANSLATE] Response missing choices[0].message.content. body=%s",
-                abbreviate(response_body, 600),
-            )
-            return None
-
-        if content is not None and not isinstance(content, str):
-            log.warning("[TRANSLATE] LLM content has unexpected type: %s", type(content).__name__)
-            return None
-
-        content = normalize(content)
-        if content is None:
-            return None
-        return clean_model_output(content)
-
-    def translate_with_retry(self, text: str, source_is_japanese: bool) -> Optional[str]:
-        attempt = 0
-        while True:
+        last_error: Optional[Exception] = None
+        attempts = self.cfg.llm_retry_count + 1
+        for attempt in range(1, attempts + 1):
+            started = time.monotonic()
             try:
-                return self._call_once(text, source_is_japanese)
-            except requests.exceptions.Timeout:
-                if attempt >= self.cfg.max_retry:
-                    log.error("[TRANSLATE] Timeout, giving up. text=%s", abbreviate(text, 160))
-                    return None
-                attempt += 1
-                log.warning(
-                    "[TRANSLATE] Timeout. Retry %d/%d. text=%s",
-                    attempt, self.cfg.max_retry, abbreviate(text, 160),
+                response = self.session.post(
+                    f"{self.cfg.lm_url}/v1/chat/completions",
+                    headers=self._headers(),
+                    json=payload,
+                    timeout=(
+                        self.cfg.connect_timeout_seconds,
+                        self.cfg.request_timeout_seconds,
+                    ),
                 )
-                time.sleep(0.7)
-            except requests.exceptions.RequestException as exc:
-                log.error("[TRANSLATE] LLM call failed. text=%s, error=%s", abbreviate(text, 160), exc)
-                return None
+                elapsed = time.monotonic() - started
+                if response.status_code >= 400:
+                    raise RuntimeError(
+                        f"LLM HTTP {response.status_code}: "
+                        f"{response.text[:500]}"
+                    )
+
+                body = response.json()
+                log.info(body)
+                choices = body.get("choices")
+                if not isinstance(choices, list) or not choices:
+                    raise RuntimeError("LLM không trả về choices[0].")
+
+                choice = choices[0] if isinstance(choices[0], dict) else {}
+                message = choice.get("message") or {}
+
+                raw_content = message.get("content")
+
+                # Một số OpenAI-compatible server trả content dạng list.
+                if isinstance(raw_content, list):
+                    parts: list[str] = []
+                    for item in raw_content:
+                        if isinstance(item, str):
+                            parts.append(item)
+                        elif isinstance(item, dict):
+                            value = (
+                                item.get("text")
+                                or item.get("content")
+                                or item.get("value")
+                            )
+                            if value:
+                                parts.append(str(value))
+                    raw_content = "\n".join(parts)
+
+                # CHỦ Ý KHÔNG fallback sang message["reasoning"] /
+                # message["reasoning_content"]. Với các model reasoning
+                # (vd. gpt-oss-20b), trường này chứa chuỗi suy luận nội bộ
+                # bằng tiếng Anh (vd. 'User says "ok". Probably no
+                # translation needed...') chứ KHÔNG phải bản dịch — nếu
+                # dùng làm fallback sẽ có nguy cơ ghi thẳng đoạn suy luận
+                # đó vào cột dịch trong DB. Chỉ chấp nhận các trường thực
+                # sự chứa nội dung trả lời cuối cùng.
+                candidates = [
+                    raw_content,
+                    choice.get("text"),
+                    body.get("output_text"),
+                    body.get("response"),
+                ]
+
+                content = None
+                for candidate in candidates:
+                    if candidate is None:
+                        continue
+                    cleaned = _clean_translation(str(candidate))
+                    if cleaned:
+                        content = cleaned
+                        break
+
+                if not content:
+                    preview = str(body)[:800]
+                    raise RuntimeError(
+                        "LLM không trả về nội dung dịch hợp lệ "
+                        "(content rỗng hoặc chỉ chứa suy luận nội bộ, "
+                        "không phải bản dịch). "
+                        f"Response preview: {preview}"
+                    )
+
+                log.info("LLM translated in %.2fs", elapsed)
+                return content
+            except Exception as exc:
+                last_error = exc
+                log.warning(
+                    "LLM attempt %s/%s failed: %s",
+                    attempt, attempts, exc,
+                )
+                if attempt < attempts:
+                    time.sleep(self.cfg.llm_retry_delay_seconds * attempt)
+
+        raise RuntimeError(f"Dịch thất bại: {last_error}")
+
+    def close(self) -> None:
+        self.session.close()
 
 
-def translate_default(client: LlmClient, cache: TranslationCache, input_text: str) -> str:
-    return translate_text(client, cache, input_text, source_is_japanese=False)
+_KEEP_AS_IS_TOKENS = {
+    "OK",
+    "OKE",
+    "NG",
+    "N/A",
+    "NA",
+    "PLC",
+    "USB",
+    "HSE",
+    "QC",
+    "QA",
+    "AI",
+    "QR",
+    "QR CODE",
+    "MCCB",
+    "MCB",
+    "DB",
+}
+
+_KEEP_AS_IS_PATTERN = re.compile(r"^[A-Za-z0-9_./+\-#() ]+$")
+
+
+def _is_keep_as_is_text(text: str) -> bool:
+    """
+    Nhận diện văn bản là mã kỹ thuật/viết tắt/ký hiệu không cần dịch:
+    - Khớp danh sách token cố định (OK, PLC, HSE, ...)
+    - Chuỗi rất ngắn (<=5 ký tự) chỉ gồm chữ/số/ký hiệu kỹ thuật
+    - Chuỗi toàn chữ hoa/số/ký hiệu kỹ thuật (mã máy, số hiệu)
+
+    Dùng để bỏ qua việc gọi LLM hoàn toàn cho các trường hợp rõ ràng,
+    tránh vừa tốn chi phí gọi model vừa rủi ro model trả lời sai định dạng.
+    """
+    clean = text.strip()
+    if not clean:
+        return False
+
+    upper = clean.upper()
+    if upper in _KEEP_AS_IS_TOKENS:
+        return True
+
+    if len(clean) <= 5 and _KEEP_AS_IS_PATTERN.fullmatch(clean):
+        return True
+
+    if re.fullmatch(r"[A-Z0-9_./+\-#() ]+", clean):
+        return True
+
+    return False
+
+
+def _can_keep_unchanged(source: str, translated: str) -> bool:
+    """
+    Kiểm tra sau khi đã có kết quả dịch: nếu source và translated giống hệt
+    nhau (không phân biệt hoa/thường) VÀ source thuộc dạng không cần dịch,
+    thì chấp nhận kết quả "giữ nguyên" thay vì coi là lỗi.
+    """
+    if source.strip().casefold() != translated.strip().casefold():
+        return False
+    return _is_keep_as_is_text(source)
 
 
 def translate_text(
+    source_text: Any,
+    target_column: str,
     client: LlmClient,
     cache: TranslationCache,
-    input_text: str,
-    source_is_japanese: bool,
 ) -> str:
-    original = normalize(input_text)
-    if original is None or not should_translate(original):
-        return input_text
+    source = normalize(source_text)
+    if not source:
+        raise ValueError("Nội dung nguồn trống.")
 
-    # Đã có tiếng Nhật: xem như đã dịch, tuyệt đối giữ nguyên comment.
-    if source_is_japanese:
-        if not contains_japanese(original):
-            log.info("[TRANSLATE] Skip: expected Japanese source text.")
-            return original
-    elif contains_japanese(original):
-        log.info("[TRANSLATE] Skip: text already contains Japanese.")
-        return original
+    target_language = "ja" if _is_japanese_column(target_column) else "vi"
 
-    # Chỉ dịch Việt/Latin -> Nhật
-    cached = cache.get(original, source_is_japanese)
-    if cached is not None and is_valid_translation(original, cached, source_is_japanese):
+    # ========================================================
+    # 1. Raw đã có sẵn cả phần Việt và phần Nhật
+    #    -> lấy đúng phần theo ngôn ngữ của cột đích
+    #    -> tuyệt đối không gọi LLM
+    #
+    # Ví dụ raw:
+    #     OK
+    #     了解しました。
+    #
+    # target=comment    -> OK
+    # target=comment_jp -> 了解しました。
+    # ========================================================
+    existing_target = _extract_existing_target_text(
+        source,
+        target_language,
+    )
+
+    if existing_target:
+        log.info(
+            "Reuse bilingual raw without LLM: target=%s result=%r",
+            target_language,
+            existing_target[:300],
+        )
+        cache.put(
+            source,
+            target_language,
+            existing_target,
+        )
+        return existing_target
+
+    # ========================================================
+    # 2. Mã kỹ thuật / viết tắt / token ngắn
+    #    -> giữ nguyên, không gọi LLM
+    # ========================================================
+    if _is_keep_as_is_text(source):
+        cache.put(source, target_language, source)
+        return source
+
+    # ========================================================
+    # 3. Cache chỉ được kiểm tra sau bước tách raw song ngữ.
+    #    Nhờ vậy cache cũ không thể ép service dùng lại một bản dịch LLM
+    #    khi raw hiện tại đã có sẵn đúng ngôn ngữ đích.
+    # ========================================================
+    cached = cache.get(source, target_language)
+    if cached:
         return cached
 
-    remaining_delay = cache.remaining_failure_delay(original, source_is_japanese)
-    if remaining_delay:
-        log.warning(
-            "[TRANSLATE] Skipping previously failed text for another %ds. text=%s",
-            remaining_delay,
-            abbreviate(original, 160),
+    # ========================================================
+    # 4. Raw chưa có phần ngôn ngữ đích -> mới gọi LLM
+    # ========================================================
+    translated = client.translate(source, target_language)
+
+    if (
+        target_language == "ja"
+        and not _has_japanese(translated)
+        and not _can_keep_unchanged(source, translated)
+    ):
+        raise RuntimeError(
+            "Bản dịch tiếng Nhật không chứa ký tự tiếng Nhật."
         )
-        return original
 
-    translated = normalize(client.translate_with_retry(original, source_is_japanese))
-
-    # Lỗi LLM / kết quả không phải tiếng Nhật: không ghi đè raw text.
-    if not is_valid_translation(original, translated, source_is_japanese):
-        retry_delay = cache.record_failure(
-            original,
-            source_is_japanese,
-            base_delay_seconds=client.cfg.llm_failure_retry_seconds,
-            max_delay_seconds=client.cfg.llm_failure_retry_max_seconds,
-            reason="LLM returned no valid translation",
+    if (
+        target_language == "vi"
+        and _has_japanese(translated)
+    ):
+        raise RuntimeError(
+            "Bản dịch tiếng Việt vẫn còn chứa nội dung tiếng Nhật."
         )
-        log.warning("[TRANSLATE] Invalid translation; keeping original text.")
-        if retry_delay:
-            log.warning("[TRANSLATE] Next retry for this text will wait %ds.", retry_delay)
-        return original
 
-    cache.put(original, source_is_japanese, translated)
+    if (
+        target_language == "vi"
+        and translated.strip().casefold() == source.strip().casefold()
+        and not _can_keep_unchanged(source, translated)
+    ):
+        raise RuntimeError(
+            "LLM trả lại nguyên văn cho nội dung cần dịch."
+        )
+
+    cache.put(source, target_language, translated)
     return translated
 
 
-# --------------------------------------------------------------------------
-# Checkpoint / watermark state (kept for observability/logging only; the
-# actual work queue is driven by "target IS NULL/empty", see fetch_pending())
-# --------------------------------------------------------------------------
+# ============================================================
+# Processing engine
+# ============================================================
 
 @dataclass
-class Watermark:
-    last_ts: Optional[datetime]
-    last_id: int
+class ProcessResult:
+    scanned: int = 0
+    translated: int = 0
+    skipped: int = 0
+    failed: int = 0
+    stopped: bool = False
 
 
-def load_watermark(state_file: Path) -> Watermark:
-    if not state_file.exists():
-        return Watermark(last_ts=None, last_id=0)
-    try:
-        data = json.loads(state_file.read_text(encoding="utf-8"))
-        ts_raw = data.get("last_ts")
-        last_ts = datetime.fromisoformat(ts_raw) if ts_raw else None
-        return Watermark(last_ts=last_ts, last_id=int(data.get("last_id", 0)))
-    except (json.JSONDecodeError, ValueError, OSError):
-        log.warning("[STATE] Could not read state file, starting from beginning.")
-        return Watermark(last_ts=None, last_id=0)
-
-
-def save_watermark(state_file: Path, watermark: Watermark) -> None:
-    tmp = state_file.with_suffix(".tmp")
-    tmp.write_text(
-        json.dumps({
-            "last_ts": watermark.last_ts.isoformat() if watermark.last_ts else None,
-            "last_id": watermark.last_id,
-        }),
-        encoding="utf-8",
-    )
-    tmp.replace(state_file)
-
-
-# --------------------------------------------------------------------------
-# Single-instance guard
-# --------------------------------------------------------------------------
-
-class FileLockGuard:
-    """Prevent a second service instance from running on the same host."""
-
-    def __init__(self, lock_file: Path):
-        self.lock_file = lock_file
-        self._fh = None
-
-    def acquire(self) -> bool:
-        self.lock_file.parent.mkdir(parents=True, exist_ok=True)
-        self._fh = open(self.lock_file, "a+b")
-        try:
-            if os.name == "nt":
-                import msvcrt
-                self._fh.seek(0, os.SEEK_END)
-                if self._fh.tell() == 0:
-                    self._fh.write(b"\0")
-                    self._fh.flush()
-                self._fh.seek(0)
-                msvcrt.locking(self._fh.fileno(), msvcrt.LK_NBLCK, 1)
-            else:
-                import fcntl
-                fcntl.flock(self._fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
-
-            self._fh.seek(0)
-            self._fh.write(f"{os.getpid()}\n".encode("ascii"))
-            self._fh.truncate()
-            self._fh.flush()
-            return True
-        except (BlockingIOError, OSError):
-            self._fh.close()
-            self._fh = None
-            return False
-
-    def release(self) -> None:
-        if self._fh is not None:
-            try:
-                if os.name == "nt":
-                    import msvcrt
-                    self._fh.seek(0)
-                    msvcrt.locking(self._fh.fileno(), msvcrt.LK_UNLCK, 1)
-                else:
-                    import fcntl
-                    fcntl.flock(self._fh, fcntl.LOCK_UN)
-            except Exception:  # noqa: BLE001
-                pass
-            self._fh.close()
-            self._fh = None
-
-
-def acquire_db_applock(conn, resource_name: str) -> bool:
-    try:
-        cursor = conn.cursor()
-        cursor.execute(
-            "DECLARE @result int; "
-            "EXEC @result = sp_getapplock @Resource = ?, @LockMode = 'Exclusive', "
-            "@LockOwner = 'Session', @LockTimeout = 0; "
-            "SELECT @result;",
-            resource_name,
-        )
-        row = cursor.fetchone()
-        conn.commit()
-        result_code = row[0] if row else -999
-        return result_code >= 0
-    except Exception as exc:  # noqa: BLE001
-        log.warning("[LOCK] sp_getapplock not available/failed (%s). Relying on file lock only.", exc)
-        return True
-
-
-# --------------------------------------------------------------------------
-# DB layer (persistent connection with reconnect)
-# --------------------------------------------------------------------------
-
-def build_connection_string(cfg: Config) -> str:
-    parts = [f"DRIVER={cfg.db_driver}", f"SERVER={cfg.db_server}", f"DATABASE={cfg.db_database}"]
-    if cfg.db_trusted_connection:
-        parts.append("Trusted_Connection=yes")
-    else:
-        parts.append(f"UID={cfg.db_user}")
-        parts.append(f"PWD={cfg.db_password}")
-    return ";".join(parts) + ";"
-
-
-class DbConnection:
-    """Wraps a single persistent pyodbc connection, reused across polls.
-    Automatically reconnects (and re-acquires the applock) if the
-    connection drops."""
-
-    def __init__(self, cfg: Config):
-        self.cfg = cfg
-        self.conn = None
-
-    def connect(self) -> None:
-        if pyodbc is None:
-            raise RuntimeError("pyodbc is not installed. Run: pip install pyodbc")
-        conn_str = build_connection_string(self.cfg)
-        self.conn = pyodbc.connect(conn_str, timeout=int(self.cfg.connect_timeout_seconds), autocommit=False)
-        if self.cfg.use_db_applock:
-            resource = f"patrol_translate_service:{self.cfg.table_name}"
-            if not acquire_db_applock(self.conn, resource):
-                raise RuntimeError(
-                    "Another instance already holds the DB application lock "
-                    f"('{resource}'). Refusing to start."
-                )
-
-    def ensure_connected(self) -> None:
-        if self.conn is None:
-            self.connect()
-            return
-        try:
-            self.conn.cursor().execute("SELECT 1")
-        except Exception:  # noqa: BLE001
-            log.warning("[DB] Connection appears dead, reconnecting...")
-            try:
-                self.conn.close()
-            except Exception:  # noqa: BLE001
-                pass
-            self.connect()
-
-    def cursor(self):
-        return self.conn.cursor()
-
-    def commit(self) -> None:
-        self.conn.commit()
-
-    def close(self) -> None:
-        if self.conn is not None:
-            try:
-                self.conn.close()
-            except Exception:  # noqa: BLE001
-                pass
-            self.conn = None
-
-
-def fetch_pending(db: DbConnection, cfg: Config, source_column: str, target_column: str):
-    """Rows where `source_column` has text but `target_column` is still
-    empty -- i.e. still pending translation for THIS column pair."""
-    watermark_expr = f"[{cfg.created_column}]"
-    sql = (
-        f"SELECT TOP ({cfg.batch_size}) [{cfg.id_column}], [{source_column}], "
-        f"[{target_column}], {watermark_expr} AS watermark_ts "
-        f"FROM [{cfg.table_name}] "
-        f"WHERE [{source_column}] IS NOT NULL "
-        f"AND ([{target_column}] IS NULL OR LTRIM(RTRIM([{target_column}])) = '') "
-        f"ORDER BY {watermark_expr} DESC, [{cfg.id_column}] DESC"
-    )
-    cursor = db.cursor()
-    cursor.execute(sql)
-    return cursor.fetchall()
-
-
-def batch_update_target(db: DbConnection, cfg: Config, target_column: str, updates: list[tuple[str, int]]) -> None:
-    """Write translations into `target_column` without touching the source
-    column. updates: list of (translated_text, id)."""
-    if not updates:
-        return
-    sql = (
-        f"UPDATE [{cfg.table_name}] "
-        f"SET [{target_column}] = ?, "
-        f"[{cfg.ai_translate_update_column}] = GETDATE() "
-        f"WHERE [{cfg.id_column}] = ?"
-    )
-    cursor = db.cursor()
-    # Avoid pyodbc allocating one fixed string buffer from the first value in
-    # a batch.  Japanese translations naturally vary in length.
-    cursor.fast_executemany = False
-    cursor.executemany(sql, updates)
-    db.commit()
-
-
-# --------------------------------------------------------------------------
-# Main loop
-# --------------------------------------------------------------------------
-
-_shutdown_requested = False
-
-
-def _handle_shutdown(signum, frame):  # noqa: ARG001
-    global _shutdown_requested
-    log.info("[SERVICE] Shutdown signal received (%s). Finishing current cycle...", signum)
-    _shutdown_requested = True
-
-
-def process_pair(
-    client: LlmClient,
-    cache: TranslationCache,
-    db: DbConnection,
+def process_pairs(
     cfg: Config,
-    source_column: str,
-    target_column: str,
-    watermark: Watermark,
-) -> Watermark:
-    rows = fetch_pending(db, cfg, source_column, target_column)
-    source_is_japanese = source_column.casefold().endswith(("_jp", "_japanese"))
+    pairs: Iterable[tuple[str, str]],
+    date_from: Optional[date] = None,
+    date_to: Optional[date] = None,
+    selected_ids: Optional[Iterable[Any]] = None,
+    stop_event: Any = None,
+    progress_callback: Any = None,
+) -> ProcessResult:
+    db: Optional[DbConnection] = None
+    cache: Optional[TranslationCache] = None
+    client: Optional[LlmClient] = None
+    result = ProcessResult()
 
-    if not rows:
-        return watermark
+    try:
+        db = DbConnection(cfg)
+        db.connect()
+        ensure_work_state_table(db, cfg)
 
-    pending_updates: list[tuple[str, int]] = []
+        cache = TranslationCache(cfg.cache_db_file)
+        client = LlmClient(cfg)
 
-    for record_id, source_value, target_value, watermark_ts in rows:
-        if watermark_ts is not None and (
-            watermark.last_ts is None
-            or watermark_ts > watermark.last_ts
-            or (watermark_ts == watermark.last_ts and record_id > watermark.last_id)
-        ):
-            watermark = Watermark(last_ts=watermark_ts, last_id=record_id)
-
-        original = normalize(source_value)
-        if original is None:
-            continue
-
-        # Defensive check in case another process filled the target between
-        # the SELECT and this loop.
-        if contains_japanese(normalize(target_value)):
-            log.info("[SKIP] id=%s: %s already contains Japanese.", record_id, target_column)
-            continue
-
-        if not should_translate(original):
-            log.info(
-                "[SKIP] id=%s (%s): not translatable text: [%s]",
-                record_id, source_column, abbreviate(original, 120),
-            )
-            continue
-
-        if contains_japanese(original) and not source_is_japanese:
-            japanese_lines = [
-                line.strip() for line in original.splitlines()
-                if contains_japanese(line)
-            ]
-            existing_japanese = "\n".join(japanese_lines).strip()
-            if existing_japanese:
-                log.info(
-                    "[MIGRATE] id=%s: copying existing Japanese from %s to %s.",
-                    record_id, source_column, target_column,
-                )
-                pending_updates.append((existing_japanese, record_id))
-            else:
-                log.info(
-                    "[SKIP] id=%s: %s already contains Japanese.", record_id, source_column,
-                )
-            continue
-
-        log.info("[TRANSLATE] id=%s (%s): source=[%s]", record_id, source_column, abbreviate(original, 160))
-        translated = translate_text(client, cache, original, source_is_japanese)
-
-        if translated == original:
-            log.warning("[TRANSLATE] id=%s (%s): translation unchanged/invalid, skipping.", record_id, source_column)
-            continue
-
-        log.info("[TRANSLATE] id=%s (%s): result=[%s]", record_id, source_column, abbreviate(translated, 160))
-        pending_updates.append((translated, record_id))
-
-    if pending_updates:
-        if cfg.dry_run:
-            for translated, record_id in pending_updates:
-                log.info(
-                    "[DRY-RUN] id=%s: would update %s -> [%s]",
-                    record_id, target_column, abbreviate(translated, 160),
-                )
-        else:
-            batch_update_target(db, cfg, target_column, pending_updates)
-            log.info(
-                "[DB] Batch updated %d record(s) for %s in one commit.",
-                len(pending_updates), target_column,
+        for source_column, target_column in pairs:
+            # Với chế độ "chỉ dịch dòng đã chọn", giữ một tập ID còn lại.
+            # Sau mỗi batch, loại các ID đã quét khỏi tập này để không bỏ sót
+            # khi số dòng chọn lớn hơn BATCH_SIZE và cũng tránh vòng lặp vô
+            # hạn ở DRY_RUN (target không được ghi DB).
+            remaining_selected_ids: Optional[set[str]] = (
+                {str(value) for value in selected_ids}
+                if selected_ids is not None
+                else None
             )
 
-    return watermark
+            while True:
+                if stop_event is not None and stop_event.is_set():
+                    result.stopped = True
+                    return result
+
+                if remaining_selected_ids is not None and not remaining_selected_ids:
+                    break
+
+                ids_for_query = (
+                    remaining_selected_ids
+                    if remaining_selected_ids is not None
+                    else None
+                )
+
+                rows = fetch_pending(
+                    db=db,
+                    cfg=cfg,
+                    source_column=source_column,
+                    target_column=target_column,
+                    date_from=date_from,
+                    date_to=date_to,
+                    selected_ids=ids_for_query,
+                    batch_size=cfg.batch_size,
+                )
+                if not rows:
+                    break
+
+                if remaining_selected_ids is not None:
+                    remaining_selected_ids.difference_update(
+                        str(row["record_id"]) for row in rows
+                    )
+
+                for row in rows:
+                    if stop_event is not None and stop_event.is_set():
+                        result.stopped = True
+                        return result
+
+                    result.scanned += 1
+                    record_id = row["record_id"]
+                    source_text = row["source"] or ""
+
+                    if progress_callback:
+                        progress_callback("start", row, result)
+
+                    try:
+                        translated = translate_text(
+                            source_text,
+                            target_column,
+                            client,
+                            cache,
+                        )
+
+                        if cfg.dry_run:
+                            changed = True
+                        else:
+                            changed = update_target(
+                                db, cfg, record_id, target_column, translated
+                            )
+
+                        if changed:
+                            clear_work_state(
+                                db, cfg, record_id, source_column, target_column
+                            )
+                            result.translated += 1
+                            if progress_callback:
+                                progress_callback(
+                                    "success",
+                                    {**row, "translated": translated},
+                                    result,
+                                )
+                        else:
+                            # rowcount=0 chưa đủ để kết luận target đã có dữ liệu.
+                            # Đọc lại DB để phân biệt chính xác:
+                            #   1) Target đã được process khác ghi -> skipped hợp lệ.
+                            #   2) Record bị xóa -> lỗi.
+                            #   3) Record vẫn còn nhưng target vẫn trống -> lỗi UPDATE.
+                            record_exists, current_target = read_target_value(
+                                db,
+                                cfg,
+                                record_id,
+                                target_column,
+                            )
+
+                            if current_target:
+                                clear_work_state(
+                                    db, cfg, record_id, source_column, target_column
+                                )
+                                result.skipped += 1
+                                if progress_callback:
+                                    progress_callback(
+                                        "skipped",
+                                        {
+                                            **row,
+                                            "target": current_target,
+                                            "skip_reason": "TARGET_ALREADY_EXISTS",
+                                            "note": "Target đã có dữ liệu trong DB",
+                                        },
+                                        result,
+                                    )
+                            elif not record_exists:
+                                raise RuntimeError(
+                                    f"Không thể UPDATE vì record id={record_id} "
+                                    "không còn tồn tại trong DB."
+                                )
+                            else:
+                                raise RuntimeError(
+                                    f"UPDATE target thất bại cho id={record_id}, "
+                                    f"cột={target_column}; target vẫn đang trống."
+                                )
+                    except Exception as exc:
+                        result.failed += 1
+                        try:
+                            defer_failed_record(
+                                db,
+                                cfg,
+                                record_id,
+                                source_column,
+                                target_column,
+                                source_text,
+                                str(exc),
+                            )
+                        except Exception:
+                            log.exception("Không lưu được trạng thái lỗi.")
+                        if progress_callback:
+                            progress_callback(
+                                "failed",
+                                {**row, "error": str(exc)},
+                                result,
+                            )
+
+        return result
+    finally:
+        if client is not None:
+            client.close()
+        if cache is not None:
+            cache.close()
+        if db is not None:
+            db.close()
 
 
-def process_batch(
-    client: LlmClient,
-    cache: TranslationCache,
-    db: DbConnection,
-    cfg: Config,
-    watermark: Watermark,
-) -> Watermark:
-    """Runs one poll cycle across ALL configured (source, target) pairs."""
-    for source_column, target_column in cfg.translate_columns:
-        watermark = process_pair(client, cache, db, cfg, source_column, target_column, watermark)
-    return watermark
-
-
-def run() -> None:
+def run_service() -> None:
+    global log
     cfg = load_config()
-    setup_logging(cfg)
+    log = setup_logging(cfg)
 
-    if not cfg.db_server or not cfg.db_database:
-        log.error("DB_SERVER and DB_DATABASE must be set. Exiting.")
-        sys.exit(1)
-
-    signal.signal(signal.SIGINT, _handle_shutdown)
-    signal.signal(signal.SIGTERM, _handle_shutdown)
-
-    file_lock = FileLockGuard(cfg.lock_file)
-    if not file_lock.acquire():
-        log.error("[LOCK] Another instance is already running on this host (lock file: %s). Exiting.", cfg.lock_file)
-        sys.exit(1)
-
-    client = LlmClient(cfg)
-    cache = TranslationCache(cfg.cache_db_file)
     db = DbConnection(cfg)
-    watermark = load_watermark(cfg.state_file)
-
     try:
         db.connect()
-    except Exception:
-        log.exception("[SERVICE] Could not start (DB connect / app-lock failed).")
-        file_lock.release()
-        sys.exit(1)
+        ensure_work_state_table(db, cfg)
+        if not acquire_db_lock(db, cfg):
+            raise RuntimeError(
+                "Một service khác đang chạy và giữ DB application lock."
+            )
+        log.info("Patrol translate service started.")
+        log.info("Pairs: %s", cfg.translate_columns)
 
-    log.info(
-        "[SERVICE] Starting. table=%s, pairs=%s, watermark=%s/%s, pollInterval=%ss, dryRun=%s",
-        cfg.table_name, cfg.translate_columns, watermark.last_ts, watermark.last_id,
-        cfg.poll_interval_seconds, cfg.dry_run,
-    )
-
-    try:
-        while not _shutdown_requested:
+        while True:
             try:
-                db.ensure_connected()
-                watermark = process_batch(client, cache, db, cfg, watermark)
-                save_watermark(cfg.state_file, watermark)
-            except Exception:  # noqa: BLE001
-                log.exception("[SERVICE] Unexpected error during poll cycle.")
-
-            for _ in range(int(cfg.poll_interval_seconds * 10)):
-                if _shutdown_requested:
-                    break
-                time.sleep(0.1)
+                result = process_pairs(cfg, cfg.translate_columns)
+                log.info(
+                    "Cycle complete: scanned=%s translated=%s skipped=%s failed=%s",
+                    result.scanned,
+                    result.translated,
+                    result.skipped,
+                    result.failed,
+                )
+            except KeyboardInterrupt:
+                break
+            except Exception:
+                log.exception("Service cycle failed.")
+            time.sleep(cfg.poll_interval_seconds)
     finally:
         db.close()
-        cache.close()
-        file_lock.release()
-        log.info("[SERVICE] Stopped.")
+        log.info("Patrol translate service stopped.")
 
 
 if __name__ == "__main__":
-    run()
+    run_service()

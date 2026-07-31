@@ -1,0 +1,1992 @@
+2026-07-29 13:32:58,801 [INFO] [SERVICE] Starting. table=F2_Patrol_Report, pairs=(('comment', 'comment_jp'), ('countermeasure', 'countermeasure_jp'), ('comment_jp', 'comment'), ('countermeasure_jp', 'countermeasure')), watermark=2026-07-28 17:07:55.793000/2955, pollInterval=5.0s, dryRun=False
+2026-07-29 13:32:58,929 [INFO] [TRANSLATE] id=2963 (comment): source=[cover thay thế nguy hiểm... bộ phận chuyển động ra vào có khả năng gây ra tai nạn lao động]
+2026-07-29 13:32:59,913 [INFO] [TRANSLATE] Completed in 977 ms. inputLength=90, outputLength=36
+2026-07-29 13:32:59,952 [INFO] [TRANSLATE] id=2963 (comment): result=[危険なカバー交換…出入口の可動部が労働災害を引き起こす可能性があります。]
+2026-07-29 13:32:59,955 [INFO] [TRANSLATE] id=2962 (comment): source=[Tools không có cover che chắnva chạm gây chấn thương]
+2026-07-29 13:33:00,449 [INFO] [TRANSLATE] Completed in 492 ms. inputLength=52, outputLength=24
+2026-07-29 13:33:00,484 [INFO] [TRANSLATE] id=2962 (comment): result=[保護カバーのない工具が衝突し、怪我を引き起こす。]
+2026-07-29 13:33:00,485 [INFO] [TRANSLATE] id=2961 (comment): source=[Tools không có cover che chắnva chạm gây chấn thương]
+2026-07-29 13:33:00,485 [INFO] [TRANSLATE] id=2961 (comment): result=[保護カバーのない工具が衝突し、怪我を引き起こす。]
+2026-07-29 13:33:00,486 [INFO] [TRANSLATE] id=2960 (comment): source=[cover thay thế nguy hiểm... bộ phận chuyển động ra vào có khả năng gây ra tai nạn lao động]
+2026-07-29 13:33:00,487 [INFO] [TRANSLATE] id=2960 (comment): result=[危険なカバー交換…出入口の可動部が労働災害を引き起こす可能性があります。]
+2026-07-29 13:33:00,487 [INFO] [MIGRATE] id=2959: copying existing Japanese from comment to comment_jp.
+2026-07-29 13:33:00,487 [INFO] [MIGRATE] id=2958: copying existing Japanese from comment to comment_jp.
+2026-07-29 13:33:00,487 [INFO] [MIGRATE] id=2957: copying existing Japanese from comment to comment_jp.
+2026-07-29 13:33:00,488 [INFO] [MIGRATE] id=2956: copying existing Japanese from comment to comment_jp.
+2026-07-29 13:33:00,488 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 13:33:03,973 [WARNING] [TRANSLATE] LLM returned error. status=400, elapsedMs=3484, body={"error":"The model has crashed without additional information. (Exit code: 18446744072635812000)"}
+2026-07-29 13:33:03,995 [WARNING] [TRANSLATE] Invalid translation; keeping original text.
+2026-07-29 13:33:03,996 [WARNING] [TRANSLATE] Next retry for this text will wait 1200s.
+2026-07-29 13:33:03,996 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 13:33:03,997 [INFO] [MIGRATE] id=973: copying existing Japanese from comment to comment_jp.
+2026-07-29 13:33:04,664 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 13:33:04,896 [INFO] [MIGRATE] id=2957: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 13:33:04,896 [INFO] [TRANSLATE] id=2956 (countermeasure): source=[đổi máy tính mới]
+2026-07-29 13:33:11,865 [INFO] [TRANSLATE] Completed in 6967 ms. inputLength=16, outputLength=15
+2026-07-29 13:33:11,886 [INFO] [TRANSLATE] id=2956 (countermeasure): result=[新しいコンピュータへ交換する。]
+2026-07-29 13:33:11,906 [INFO] [DB] Batch updated 2 record(s) for countermeasure_jp in one commit.
+2026-07-29 13:33:16,963 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 13:33:16,964 [WARNING] [TRANSLATE] Skipping previously failed text for another 1188s. text=5S
+5S
+2026-07-29 13:33:16,964 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 13:33:16,964 [INFO] [MIGRATE] id=972: copying existing Japanese from comment to comment_jp.
+2026-07-29 13:33:16,965 [INFO] [MIGRATE] id=971: copying existing Japanese from comment to comment_jp.
+2026-07-29 13:33:16,965 [INFO] [MIGRATE] id=970: copying existing Japanese from comment to comment_jp.
+2026-07-29 13:33:16,965 [INFO] [MIGRATE] id=969: copying existing Japanese from comment to comment_jp.
+2026-07-29 13:33:16,965 [INFO] [MIGRATE] id=968: copying existing Japanese from comment to comment_jp.
+2026-07-29 13:33:16,966 [INFO] [MIGRATE] id=967: copying existing Japanese from comment to comment_jp.
+2026-07-29 13:33:16,966 [INFO] [MIGRATE] id=966: copying existing Japanese from comment to comment_jp.
+2026-07-29 13:33:16,966 [INFO] [MIGRATE] id=965: copying existing Japanese from comment to comment_jp.
+2026-07-29 13:33:16,966 [INFO] [MIGRATE] id=964: copying existing Japanese from comment to comment_jp.
+2026-07-29 13:33:17,022 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 13:33:22,106 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 13:33:22,107 [WARNING] [TRANSLATE] Skipping previously failed text for another 1182s. text=5S
+5S
+2026-07-29 13:33:22,108 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 13:33:22,108 [INFO] [MIGRATE] id=963: copying existing Japanese from comment to comment_jp.
+2026-07-29 13:33:22,108 [INFO] [MIGRATE] id=962: copying existing Japanese from comment to comment_jp.
+2026-07-29 13:33:22,108 [INFO] [TRANSLATE] id=961 (comment): source=[cover có 2 vị trí đóng mở, có thể nguy hiểm cho NV
+cover có 2 vị trí đóng mở, có thể nguy hiểm cho NV]
+2026-07-29 13:33:23,099 [INFO] [TRANSLATE] Completed in 990 ms. inputLength=101, outputLength=34
+2026-07-29 13:33:23,109 [INFO] [TRANSLATE] id=961 (comment): result=[カバーには開閉位置が２箇所あり、作業者に危険を及ぼす恐れがあります。]
+2026-07-29 13:33:23,109 [INFO] [TRANSLATE] id=960 (comment): source=[sau khi setup mất cover 
+sau khi setup mất cover]
+2026-07-29 13:33:23,601 [INFO] [TRANSLATE] Completed in 489 ms. inputLength=48, outputLength=20
+2026-07-29 13:33:23,610 [INFO] [TRANSLATE] id=960 (comment): result=[セットアップ後、カバーが欠落しています。]
+2026-07-29 13:33:23,610 [INFO] [TRANSLATE] id=959 (comment): source=[cover che lâu ngày bị mờ, vướng tay khi thao tác, nguy cơ va chạm. Cover bên bị bể, nước chảy ra bên ngoài
+cover che lâu ngày bị mờ, vướng tay khi thao tác, ngu...]
+2026-07-29 13:33:24,867 [INFO] [TRANSLATE] Completed in 1256 ms. inputLength=213, outputLength=74
+2026-07-29 13:33:24,876 [INFO] [TRANSLATE] id=959 (comment): result=[カバーが長期間使用された結果、曇りが生じ、作業中に手が挟まれる恐れや衝突の危険があります。また、側面のカバーは破損しており、水が外部へ漏れています。]
+2026-07-29 13:33:24,877 [INFO] [TRANSLATE] id=958 (comment): source=[từa bàn  từ va ga hàng máy không mang bao tay
+từa bàn  từ va ga hàng máy không mang bao tay]
+2026-07-29 13:33:25,372 [INFO] [TRANSLATE] Completed in 495 ms. inputLength=91, outputLength=25
+2026-07-29 13:33:25,382 [INFO] [TRANSLATE] id=958 (comment): result=[機械搬送時に作業員が手袋を着用していませんでした。]
+2026-07-29 13:33:25,383 [INFO] [TRANSLATE] id=957 (comment): source=[cover tháo khỏi trục quay 
+
+cover tháo khỏi trục quay]
+2026-07-29 13:33:25,736 [INFO] [TRANSLATE] Completed in 352 ms. inputLength=53, outputLength=15
+2026-07-29 13:33:25,754 [INFO] [TRANSLATE] id=957 (comment): result=[カバーが回転軸から外れました。]
+2026-07-29 13:33:25,754 [INFO] [TRANSLATE] id=956 (comment): source=[Công tắc không hiển thị chức năng
+Công tắc không hiển thị chức năng]
+2026-07-29 13:33:26,138 [INFO] [TRANSLATE] Completed in 383 ms. inputLength=67, outputLength=15
+2026-07-29 13:33:26,145 [INFO] [TRANSLATE] id=956 (comment): result=[スイッチが機能を表示しません。]
+2026-07-29 13:33:26,146 [INFO] [TRANSLATE] id=955 (comment): source=[nhân viên vệ sinh hàng trong buồng máy dễ bị văng hàng vào đá
+nhân viên vệ sinh hàng trong buồng máy dễ bị văng hàng vào đá]
+2026-07-29 13:33:27,107 [INFO] [TRANSLATE] Completed in 960 ms. inputLength=123, outputLength=35
+2026-07-29 13:33:27,116 [INFO] [TRANSLATE] id=955 (comment): result=[機械室内で作業する清掃員は、荷物が転倒して床に落ちる危険性があります。]
+2026-07-29 13:33:27,168 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 13:33:27,953 [INFO] [SERVICE] Shutdown signal received (2). Finishing current cycle...
+2026-07-29 13:33:28,004 [INFO] [SERVICE] Stopped.
+2026-07-29 14:28:47,994 [INFO] [SERVICE] Starting. table=F2_Patrol_Report, pairs=(('comment', 'comment_jp'), ('countermeasure', 'countermeasure_jp'), ('comment_jp', 'comment'), ('countermeasure_jp', 'countermeasure')), watermark=2026-07-29 13:30:59.777000/2963, pollInterval=5.0s, dryRun=False
+2026-07-29 14:28:48,011 [INFO] [TRANSLATE] id=2965 (comment): source=[Bảng đặt bình chửa cháy có chiều cao chưa đúng qui định an toàn]
+2026-07-29 14:28:49,142 [INFO] [TRANSLATE] Completed in 1129 ms. inputLength=63, outputLength=24
+2026-07-29 14:28:49,155 [INFO] [TRANSLATE] id=2965 (comment): result=[消火器置き台の高さが安全規定に適合していません。]
+2026-07-29 14:28:49,161 [INFO] [TRANSLATE] id=2964 (comment): source=[bình nước đẹp]
+2026-07-29 14:28:49,482 [INFO] [TRANSLATE] Completed in 320 ms. inputLength=13, outputLength=5
+2026-07-29 14:28:49,487 [INFO] [TRANSLATE] id=2964 (comment): result=[美しい水筒]
+2026-07-29 14:28:49,487 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:28:53,052 [WARNING] [TRANSLATE] LLM returned error. status=400, elapsedMs=3563, body={"error":"The model has crashed without additional information. (Exit code: 18446744072635812000)"}
+2026-07-29 14:28:53,056 [WARNING] [TRANSLATE] Invalid translation; keeping original text.
+2026-07-29 14:28:53,056 [WARNING] [TRANSLATE] Next retry for this text will wait 2400s.
+2026-07-29 14:28:53,056 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:28:53,056 [INFO] [TRANSLATE] id=954 (comment): source=[nv dùng móc để kéo sp ra
+nv dùng móc để kéo sp ra]
+2026-07-29 14:29:08,572 [INFO] [TRANSLATE] Completed in 15515 ms. inputLength=49, outputLength=19
+2026-07-29 14:29:08,580 [INFO] [TRANSLATE] id=954 (comment): result=[作業員はフックを使ってSPを引き抜く。]
+2026-07-29 14:29:08,581 [INFO] [TRANSLATE] id=952 (comment): source=[Dụng cụ để trên tủ nguy cơ rơi xuống. 
+Caliper no cover
+Dụng cụ để trên tủ nguy cơ rơi xuống. 
+Caliper no cover]
+2026-07-29 14:29:13,184 [INFO] [TRANSLATE] Completed in 4601 ms. inputLength=111, outputLength=42
+2026-07-29 14:29:13,189 [INFO] [TRANSLATE] id=952 (comment): result=[工具をキャビネット上に置くと落下の危険があります。カリパーはカバーが付いていません。]
+2026-07-29 14:29:13,190 [INFO] [TRANSLATE] id=950 (comment): source=[dùng chổi vệ sinh tay và chạm vào bệ gas
+dùng chổi vệ sinh tay và chạm vào bệ gas]
+2026-07-29 14:29:13,190 [INFO] [TRANSLATE] id=950 (comment): result=[手洗い用ブラシを使用し、ガスベースに触れないよう注意してください。]
+2026-07-29 14:29:13,191 [INFO] [MIGRATE] id=949: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:13,191 [INFO] [TRANSLATE] id=948 (comment): source=[ống khí hướng ra ngoài, vướng lối đi
+ống khí hướng ra ngoài, vướng lối đi]
+2026-07-29 14:29:13,192 [INFO] [TRANSLATE] id=948 (comment): result=[排気管が外部に向かっているため、通路を塞いでいます。]
+2026-07-29 14:29:13,192 [INFO] [MIGRATE] id=946: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:13,192 [INFO] [MIGRATE] id=933: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:13,250 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:29:13,263 [INFO] [TRANSLATE] id=2965 (countermeasure): source=[Đặt lại bảng theo đúng qui định an toàn]
+2026-07-29 14:29:15,615 [INFO] [TRANSLATE] Completed in 2350 ms. inputLength=39, outputLength=23
+2026-07-29 14:29:15,636 [INFO] [TRANSLATE] id=2965 (countermeasure): result=[安全規定に沿ってテーブルを再設置してください。]
+2026-07-29 14:29:15,636 [INFO] [TRANSLATE] id=2964 (countermeasure): source=[mua bình nước giống vậy]
+2026-07-29 14:29:18,121 [INFO] [TRANSLATE] Completed in 2483 ms. inputLength=23, outputLength=11
+2026-07-29 14:29:18,144 [INFO] [TRANSLATE] id=2964 (countermeasure): result=[同様の水筒を購入する。]
+2026-07-29 14:29:18,164 [INFO] [DB] Batch updated 2 record(s) for countermeasure_jp in one commit.
+2026-07-29 14:29:23,222 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:29:23,222 [WARNING] [TRANSLATE] Skipping previously failed text for another 2370s. text=5S
+5S
+2026-07-29 14:29:23,222 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:29:23,223 [INFO] [MIGRATE] id=927: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:23,223 [INFO] [MIGRATE] id=926: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:23,223 [INFO] [MIGRATE] id=925: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:23,223 [INFO] [MIGRATE] id=924: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:23,224 [INFO] [MIGRATE] id=923: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:23,224 [INFO] [MIGRATE] id=922: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:23,224 [INFO] [MIGRATE] id=921: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:23,224 [INFO] [MIGRATE] id=920: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:23,224 [INFO] [MIGRATE] id=919: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:23,270 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:29:28,340 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:29:28,342 [WARNING] [TRANSLATE] Skipping previously failed text for another 2365s. text=5S
+5S
+2026-07-29 14:29:28,342 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:29:28,342 [INFO] [MIGRATE] id=918: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:28,343 [INFO] [MIGRATE] id=917: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:28,343 [INFO] [MIGRATE] id=915: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:28,344 [INFO] [MIGRATE] id=914: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:28,344 [INFO] [MIGRATE] id=913: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:28,344 [INFO] [MIGRATE] id=912: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:28,344 [INFO] [MIGRATE] id=911: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:28,345 [INFO] [MIGRATE] id=910: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:28,345 [INFO] [MIGRATE] id=909: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:28,394 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:29:33,470 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:29:33,471 [WARNING] [TRANSLATE] Skipping previously failed text for another 2360s. text=5S
+5S
+2026-07-29 14:29:33,471 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:29:33,471 [INFO] [MIGRATE] id=908: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:33,471 [INFO] [MIGRATE] id=907: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:33,472 [INFO] [MIGRATE] id=906: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:33,472 [INFO] [MIGRATE] id=905: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:33,472 [INFO] [MIGRATE] id=904: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:33,472 [INFO] [MIGRATE] id=903: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:33,472 [INFO] [MIGRATE] id=902: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:33,473 [INFO] [MIGRATE] id=901: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:33,473 [INFO] [MIGRATE] id=900: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:33,530 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:29:38,608 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:29:38,609 [WARNING] [TRANSLATE] Skipping previously failed text for another 2355s. text=5S
+5S
+2026-07-29 14:29:38,609 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:29:38,609 [INFO] [MIGRATE] id=899: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:38,609 [INFO] [MIGRATE] id=898: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:38,610 [INFO] [MIGRATE] id=897: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:38,610 [INFO] [MIGRATE] id=896: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:38,610 [INFO] [MIGRATE] id=895: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:38,610 [INFO] [MIGRATE] id=894: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:38,610 [INFO] [MIGRATE] id=893: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:38,610 [INFO] [MIGRATE] id=892: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:38,611 [INFO] [MIGRATE] id=891: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:38,670 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:29:43,762 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:29:43,762 [WARNING] [TRANSLATE] Skipping previously failed text for another 2350s. text=5S
+5S
+2026-07-29 14:29:43,762 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:29:43,763 [INFO] [MIGRATE] id=890: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:43,763 [INFO] [MIGRATE] id=889: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:43,763 [INFO] [MIGRATE] id=888: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:43,763 [INFO] [MIGRATE] id=887: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:43,763 [INFO] [MIGRATE] id=886: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:43,764 [INFO] [MIGRATE] id=885: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:43,764 [INFO] [MIGRATE] id=884: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:43,764 [INFO] [MIGRATE] id=883: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:43,764 [INFO] [MIGRATE] id=882: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:43,813 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:29:48,873 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:29:48,874 [WARNING] [TRANSLATE] Skipping previously failed text for another 2345s. text=5S
+5S
+2026-07-29 14:29:48,874 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:29:48,874 [INFO] [MIGRATE] id=881: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:48,874 [INFO] [MIGRATE] id=880: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:48,875 [INFO] [MIGRATE] id=879: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:48,875 [INFO] [MIGRATE] id=878: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:48,876 [INFO] [MIGRATE] id=877: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:48,876 [INFO] [MIGRATE] id=876: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:48,877 [INFO] [MIGRATE] id=875: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:48,877 [INFO] [MIGRATE] id=874: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:48,877 [INFO] [MIGRATE] id=872: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:48,908 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:29:53,971 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:29:53,972 [WARNING] [TRANSLATE] Skipping previously failed text for another 2340s. text=5S
+5S
+2026-07-29 14:29:53,973 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:29:53,973 [INFO] [MIGRATE] id=869: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:53,973 [INFO] [MIGRATE] id=868: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:53,973 [INFO] [MIGRATE] id=867: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:53,974 [INFO] [MIGRATE] id=866: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:53,974 [INFO] [MIGRATE] id=865: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:53,974 [INFO] [MIGRATE] id=864: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:53,974 [INFO] [MIGRATE] id=863: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:53,974 [INFO] [MIGRATE] id=862: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:53,975 [INFO] [MIGRATE] id=861: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:54,033 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:29:59,101 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:29:59,102 [WARNING] [TRANSLATE] Skipping previously failed text for another 2334s. text=5S
+5S
+2026-07-29 14:29:59,102 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:29:59,102 [INFO] [MIGRATE] id=860: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:59,102 [INFO] [MIGRATE] id=859: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:59,102 [INFO] [MIGRATE] id=858: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:59,103 [INFO] [MIGRATE] id=857: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:59,103 [INFO] [MIGRATE] id=856: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:59,103 [INFO] [MIGRATE] id=855: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:59,103 [INFO] [MIGRATE] id=854: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:59,103 [INFO] [MIGRATE] id=853: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:59,104 [INFO] [MIGRATE] id=852: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:29:59,221 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:30:04,546 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:30:04,548 [WARNING] [TRANSLATE] Skipping previously failed text for another 2329s. text=5S
+5S
+2026-07-29 14:30:04,549 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:30:04,549 [INFO] [TRANSLATE] id=851 (comment): source=[Khay chồng cao
+Khách hàng cao]
+2026-07-29 14:30:04,550 [INFO] [TRANSLATE] id=851 (comment): result=[高いフォークリフト  
+高い顧客]
+2026-07-29 14:30:04,551 [INFO] [MIGRATE] id=850: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:04,551 [INFO] [MIGRATE] id=839: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:04,551 [INFO] [MIGRATE] id=836: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:04,552 [INFO] [MIGRATE] id=834: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:04,552 [INFO] [MIGRATE] id=832: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:04,554 [INFO] [MIGRATE] id=831: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:04,554 [INFO] [MIGRATE] id=829: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:04,556 [INFO] [MIGRATE] id=828: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:05,090 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:30:10,686 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:30:10,687 [WARNING] [TRANSLATE] Skipping previously failed text for another 2323s. text=5S
+5S
+2026-07-29 14:30:10,687 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:30:10,688 [INFO] [MIGRATE] id=827: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:10,688 [INFO] [MIGRATE] id=826: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:10,688 [INFO] [MIGRATE] id=825: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:10,688 [INFO] [MIGRATE] id=824: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:10,688 [INFO] [MIGRATE] id=823: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:10,689 [INFO] [MIGRATE] id=822: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:10,689 [INFO] [MIGRATE] id=821: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:10,689 [INFO] [MIGRATE] id=820: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:10,690 [INFO] [MIGRATE] id=816: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:10,727 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:30:15,793 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:30:15,794 [WARNING] [TRANSLATE] Skipping previously failed text for another 2318s. text=5S
+5S
+2026-07-29 14:30:15,794 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:30:15,795 [INFO] [MIGRATE] id=815: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:15,795 [INFO] [MIGRATE] id=814: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:15,795 [INFO] [MIGRATE] id=813: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:15,796 [INFO] [MIGRATE] id=812: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:15,796 [INFO] [MIGRATE] id=811: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:15,796 [INFO] [MIGRATE] id=810: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:15,796 [INFO] [MIGRATE] id=809: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:15,796 [INFO] [MIGRATE] id=807: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:15,796 [INFO] [MIGRATE] id=804: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:15,907 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:30:21,074 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:30:21,075 [WARNING] [TRANSLATE] Skipping previously failed text for another 2312s. text=5S
+5S
+2026-07-29 14:30:21,076 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:30:21,076 [INFO] [MIGRATE] id=803: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:21,076 [INFO] [MIGRATE] id=799: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:21,077 [INFO] [MIGRATE] id=798: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:21,077 [INFO] [MIGRATE] id=797: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:21,078 [INFO] [MIGRATE] id=796: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:21,078 [INFO] [MIGRATE] id=795: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:21,078 [INFO] [MIGRATE] id=794: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:21,078 [INFO] [MIGRATE] id=793: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:21,079 [INFO] [MIGRATE] id=792: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:21,196 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:30:26,256 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:30:26,257 [WARNING] [TRANSLATE] Skipping previously failed text for another 2307s. text=5S
+5S
+2026-07-29 14:30:26,257 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:30:26,258 [INFO] [MIGRATE] id=791: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:26,258 [INFO] [MIGRATE] id=789: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:26,262 [INFO] [MIGRATE] id=786: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:26,262 [INFO] [MIGRATE] id=783: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:26,263 [INFO] [MIGRATE] id=782: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:26,264 [INFO] [MIGRATE] id=781: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:26,264 [INFO] [MIGRATE] id=780: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:26,265 [INFO] [MIGRATE] id=779: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:26,265 [INFO] [MIGRATE] id=778: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:30:26,319 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:30:26,993 [INFO] [SERVICE] Shutdown signal received (2). Finishing current cycle...
+2026-07-29 14:30:27,053 [INFO] [SERVICE] Stopped.
+2026-07-29 14:32:08,244 [INFO] [SERVICE] Starting. table=F2_Patrol_Report, pairs=(('comment', 'comment_jp'), ('countermeasure', 'countermeasure_jp'), ('comment_jp', 'comment'), ('countermeasure_jp', 'countermeasure')), watermark=2026-07-29 14:23:55.607000/2965, pollInterval=5.0s, dryRun=False
+2026-07-29 14:32:08,256 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:32:08,258 [WARNING] [TRANSLATE] Skipping previously failed text for another 2205s. text=5S
+5S
+2026-07-29 14:32:08,258 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:32:08,259 [INFO] [MIGRATE] id=777: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:08,259 [INFO] [MIGRATE] id=776: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:08,259 [INFO] [MIGRATE] id=769: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:08,259 [INFO] [MIGRATE] id=768: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:08,260 [INFO] [MIGRATE] id=767: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:08,260 [INFO] [MIGRATE] id=766: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:08,260 [INFO] [MIGRATE] id=765: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:08,260 [INFO] [MIGRATE] id=764: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:08,260 [INFO] [MIGRATE] id=759: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:08,311 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:32:13,371 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:32:13,372 [WARNING] [TRANSLATE] Skipping previously failed text for another 2200s. text=5S
+5S
+2026-07-29 14:32:13,372 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:32:13,372 [INFO] [MIGRATE] id=758: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:13,372 [INFO] [MIGRATE] id=756: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:13,373 [INFO] [MIGRATE] id=755: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:13,373 [INFO] [MIGRATE] id=753: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:13,373 [INFO] [MIGRATE] id=752: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:13,373 [INFO] [MIGRATE] id=751: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:13,374 [INFO] [MIGRATE] id=750: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:13,374 [INFO] [MIGRATE] id=749: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:13,374 [INFO] [MIGRATE] id=748: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:13,416 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:32:18,501 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:32:18,502 [WARNING] [TRANSLATE] Skipping previously failed text for another 2195s. text=5S
+5S
+2026-07-29 14:32:18,502 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:32:18,502 [INFO] [MIGRATE] id=747: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:18,502 [INFO] [MIGRATE] id=746: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:18,502 [INFO] [MIGRATE] id=745: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:18,502 [INFO] [MIGRATE] id=744: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:18,502 [INFO] [MIGRATE] id=743: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:18,503 [INFO] [MIGRATE] id=740: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:18,503 [INFO] [MIGRATE] id=739: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:18,503 [INFO] [MIGRATE] id=738: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:18,503 [INFO] [MIGRATE] id=737: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:18,890 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:32:24,023 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:32:24,024 [WARNING] [TRANSLATE] Skipping previously failed text for another 2190s. text=5S
+5S
+2026-07-29 14:32:24,024 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:32:24,024 [INFO] [MIGRATE] id=736: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:24,025 [INFO] [MIGRATE] id=735: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:24,025 [INFO] [MIGRATE] id=734: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:24,025 [INFO] [MIGRATE] id=733: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:24,026 [INFO] [MIGRATE] id=731: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:24,026 [INFO] [MIGRATE] id=730: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:24,026 [INFO] [MIGRATE] id=726: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:24,027 [INFO] [MIGRATE] id=721: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:24,027 [INFO] [MIGRATE] id=720: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:24,165 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:32:26,524 [INFO] [SERVICE] Shutdown signal received (2). Finishing current cycle...
+2026-07-29 14:32:26,626 [INFO] [SERVICE] Stopped.
+2026-07-29 14:32:44,132 [INFO] [SERVICE] Starting. table=F2_Patrol_Report, pairs=(('comment', 'comment_jp'), ('countermeasure', 'countermeasure_jp'), ('comment_jp', 'comment'), ('countermeasure_jp', 'countermeasure')), watermark=2026-07-29 14:23:55.607000/2965, pollInterval=5.0s, dryRun=False
+2026-07-29 14:32:44,152 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:32:44,154 [WARNING] [TRANSLATE] Skipping previously failed text for another 2169s. text=5S
+5S
+2026-07-29 14:32:44,154 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:32:44,154 [INFO] [MIGRATE] id=719: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:44,155 [INFO] [MIGRATE] id=718: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:44,155 [INFO] [MIGRATE] id=717: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:44,155 [INFO] [MIGRATE] id=716: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:44,155 [INFO] [MIGRATE] id=715: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:44,155 [INFO] [MIGRATE] id=714: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:44,155 [INFO] [MIGRATE] id=713: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:44,155 [INFO] [MIGRATE] id=712: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:44,156 [INFO] [MIGRATE] id=711: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:44,195 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:32:49,256 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:32:49,257 [WARNING] [TRANSLATE] Skipping previously failed text for another 2164s. text=5S
+5S
+2026-07-29 14:32:49,257 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:32:49,257 [INFO] [MIGRATE] id=710: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:49,257 [INFO] [MIGRATE] id=708: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:49,257 [INFO] [MIGRATE] id=707: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:49,257 [INFO] [MIGRATE] id=706: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:49,258 [INFO] [MIGRATE] id=705: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:49,258 [INFO] [MIGRATE] id=704: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:49,258 [INFO] [MIGRATE] id=700: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:49,258 [INFO] [MIGRATE] id=698: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:49,258 [INFO] [MIGRATE] id=697: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:49,294 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:32:54,356 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:32:54,356 [WARNING] [TRANSLATE] Skipping previously failed text for another 2159s. text=5S
+5S
+2026-07-29 14:32:54,357 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:32:54,357 [INFO] [MIGRATE] id=696: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:54,357 [INFO] [MIGRATE] id=676: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:54,358 [INFO] [MIGRATE] id=675: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:54,358 [INFO] [MIGRATE] id=674: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:54,358 [INFO] [MIGRATE] id=673: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:54,358 [INFO] [MIGRATE] id=672: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:54,358 [INFO] [MIGRATE] id=671: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:54,359 [INFO] [MIGRATE] id=670: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:54,359 [INFO] [MIGRATE] id=669: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:32:54,393 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:32:59,450 [INFO] [TRANSLATE] id=2966 (comment): source=[test thôi]
+2026-07-29 14:33:02,042 [INFO] [TRANSLATE] Completed in 2592 ms. inputLength=9, outputLength=6
+2026-07-29 14:33:02,046 [INFO] [TRANSLATE] id=2966 (comment): result=[テストです。]
+2026-07-29 14:33:02,046 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:33:02,047 [WARNING] [TRANSLATE] Skipping previously failed text for another 2152s. text=5S
+5S
+2026-07-29 14:33:02,047 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:33:02,047 [INFO] [MIGRATE] id=668: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:02,047 [INFO] [MIGRATE] id=667: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:02,047 [INFO] [MIGRATE] id=666: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:02,047 [INFO] [MIGRATE] id=665: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:02,047 [INFO] [MIGRATE] id=664: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:02,047 [INFO] [MIGRATE] id=663: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:02,048 [INFO] [MIGRATE] id=662: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:02,048 [INFO] [MIGRATE] id=661: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:02,117 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:33:02,133 [INFO] [TRANSLATE] id=2966 (countermeasure): source=[xong]
+2026-07-29 14:33:04,259 [INFO] [TRANSLATE] Completed in 2125 ms. inputLength=4, outputLength=6
+2026-07-29 14:33:04,263 [INFO] [TRANSLATE] id=2966 (countermeasure): result=[完了しました]
+2026-07-29 14:33:05,538 [INFO] [DB] Batch updated 1 record(s) for countermeasure_jp in one commit.
+2026-07-29 14:33:10,645 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:33:10,646 [WARNING] [TRANSLATE] Skipping previously failed text for another 2143s. text=5S
+5S
+2026-07-29 14:33:10,646 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:33:10,646 [INFO] [MIGRATE] id=660: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:10,646 [INFO] [MIGRATE] id=659: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:10,647 [INFO] [MIGRATE] id=658: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:10,647 [INFO] [MIGRATE] id=655: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:10,647 [INFO] [MIGRATE] id=654: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:10,647 [INFO] [MIGRATE] id=652: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:10,648 [INFO] [MIGRATE] id=651: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:10,648 [INFO] [MIGRATE] id=650: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:10,648 [INFO] [MIGRATE] id=649: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:10,702 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:33:15,773 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:33:15,774 [WARNING] [TRANSLATE] Skipping previously failed text for another 2138s. text=5S
+5S
+2026-07-29 14:33:15,774 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:33:15,775 [INFO] [MIGRATE] id=648: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:15,775 [INFO] [MIGRATE] id=647: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:15,775 [INFO] [MIGRATE] id=646: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:15,775 [INFO] [MIGRATE] id=645: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:15,775 [INFO] [MIGRATE] id=644: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:15,776 [INFO] [MIGRATE] id=643: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:15,776 [INFO] [MIGRATE] id=642: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:15,776 [INFO] [MIGRATE] id=641: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:15,776 [INFO] [MIGRATE] id=640: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:15,811 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:33:20,880 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:33:20,880 [WARNING] [TRANSLATE] Skipping previously failed text for another 2133s. text=5S
+5S
+2026-07-29 14:33:20,880 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:33:20,880 [INFO] [MIGRATE] id=639: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:20,880 [INFO] [MIGRATE] id=638: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:20,881 [INFO] [MIGRATE] id=637: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:20,881 [INFO] [MIGRATE] id=636: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:20,881 [INFO] [MIGRATE] id=635: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:20,881 [INFO] [MIGRATE] id=634: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:20,881 [INFO] [MIGRATE] id=633: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:20,882 [INFO] [MIGRATE] id=632: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:20,882 [INFO] [MIGRATE] id=631: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:20,947 [INFO] [DB] Batch updated 9 record(s) for comment_jp in one commit.
+2026-07-29 14:33:26,019 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:33:26,020 [WARNING] [TRANSLATE] Skipping previously failed text for another 2128s. text=5S
+5S
+2026-07-29 14:33:26,020 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:33:26,020 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:33:26,020 [WARNING] [TRANSLATE] Skipping previously failed text for another 2128s. text=5S
+5S
+2026-07-29 14:33:26,020 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:33:26,021 [INFO] [MIGRATE] id=629: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:26,021 [INFO] [MIGRATE] id=628: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:26,021 [INFO] [MIGRATE] id=627: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:26,021 [INFO] [MIGRATE] id=626: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:26,021 [INFO] [MIGRATE] id=625: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:26,021 [INFO] [MIGRATE] id=624: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:26,022 [INFO] [MIGRATE] id=623: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:26,022 [INFO] [MIGRATE] id=622: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:26,085 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:33:31,146 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:33:31,147 [WARNING] [TRANSLATE] Skipping previously failed text for another 2122s. text=5S
+5S
+2026-07-29 14:33:31,147 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:33:31,147 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:33:31,147 [WARNING] [TRANSLATE] Skipping previously failed text for another 2122s. text=5S
+5S
+2026-07-29 14:33:31,147 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:33:31,148 [INFO] [MIGRATE] id=621: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:31,148 [INFO] [MIGRATE] id=620: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:31,148 [INFO] [MIGRATE] id=619: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:31,149 [INFO] [MIGRATE] id=618: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:31,149 [INFO] [MIGRATE] id=617: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:31,149 [INFO] [MIGRATE] id=616: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:31,149 [INFO] [MIGRATE] id=615: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:31,167 [INFO] [MIGRATE] id=614: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:31,265 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:33:36,320 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:33:36,320 [WARNING] [TRANSLATE] Skipping previously failed text for another 2117s. text=5S
+5S
+2026-07-29 14:33:36,320 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:33:36,321 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:33:36,321 [WARNING] [TRANSLATE] Skipping previously failed text for another 2117s. text=5S
+5S
+2026-07-29 14:33:36,321 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:33:36,322 [INFO] [MIGRATE] id=598: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:36,322 [INFO] [MIGRATE] id=597: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:36,322 [INFO] [MIGRATE] id=596: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:36,322 [INFO] [MIGRATE] id=595: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:36,322 [INFO] [MIGRATE] id=594: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:36,322 [INFO] [MIGRATE] id=593: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:36,322 [INFO] [MIGRATE] id=592: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:36,323 [INFO] [MIGRATE] id=591: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:36,586 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:33:41,670 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:33:41,671 [WARNING] [TRANSLATE] Skipping previously failed text for another 2112s. text=5S
+5S
+2026-07-29 14:33:41,671 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:33:41,671 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:33:41,672 [WARNING] [TRANSLATE] Skipping previously failed text for another 2112s. text=5S
+5S
+2026-07-29 14:33:41,672 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:33:41,672 [INFO] [MIGRATE] id=590: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:41,672 [INFO] [MIGRATE] id=589: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:41,673 [INFO] [MIGRATE] id=588: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:41,673 [INFO] [MIGRATE] id=587: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:41,673 [INFO] [MIGRATE] id=586: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:41,673 [INFO] [MIGRATE] id=585: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:41,673 [INFO] [MIGRATE] id=584: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:41,673 [INFO] [MIGRATE] id=583: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:41,784 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:33:46,844 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:33:46,845 [WARNING] [TRANSLATE] Skipping previously failed text for another 2107s. text=5S
+5S
+2026-07-29 14:33:46,846 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:33:46,846 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:33:46,847 [WARNING] [TRANSLATE] Skipping previously failed text for another 2107s. text=5S
+5S
+2026-07-29 14:33:46,847 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:33:46,848 [INFO] [MIGRATE] id=582: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:46,848 [INFO] [MIGRATE] id=581: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:46,848 [INFO] [MIGRATE] id=580: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:46,849 [INFO] [TRANSLATE] id=579 (comment): source=[thao tác khi cover chưa đóng 
+thao tác khi cover chưa đóng]
+2026-07-29 14:33:46,849 [INFO] [TRANSLATE] id=579 (comment): result=[カバーが閉じていない状態での作業手順]
+2026-07-29 14:33:46,849 [INFO] [MIGRATE] id=578: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:46,849 [INFO] [MIGRATE] id=577: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:46,850 [INFO] [MIGRATE] id=576: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:46,850 [INFO] [MIGRATE] id=575: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:47,203 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:33:52,279 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:33:52,280 [WARNING] [TRANSLATE] Skipping previously failed text for another 2101s. text=5S
+5S
+2026-07-29 14:33:52,280 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:33:52,281 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:33:52,281 [WARNING] [TRANSLATE] Skipping previously failed text for another 2101s. text=5S
+5S
+2026-07-29 14:33:52,281 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:33:52,281 [INFO] [MIGRATE] id=574: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:52,281 [INFO] [MIGRATE] id=573: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:52,282 [INFO] [MIGRATE] id=572: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:52,282 [INFO] [MIGRATE] id=571: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:52,282 [INFO] [MIGRATE] id=570: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:52,282 [INFO] [MIGRATE] id=569: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:52,282 [INFO] [MIGRATE] id=568: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:52,283 [INFO] [MIGRATE] id=567: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:54,065 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:33:59,131 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:33:59,131 [WARNING] [TRANSLATE] Skipping previously failed text for another 2094s. text=5S
+5S
+2026-07-29 14:33:59,132 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:33:59,132 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:33:59,132 [WARNING] [TRANSLATE] Skipping previously failed text for another 2094s. text=5S
+5S
+2026-07-29 14:33:59,132 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:33:59,133 [INFO] [MIGRATE] id=566: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:59,133 [INFO] [MIGRATE] id=565: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:59,133 [INFO] [MIGRATE] id=564: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:59,133 [INFO] [MIGRATE] id=563: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:59,133 [INFO] [MIGRATE] id=562: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:59,134 [INFO] [MIGRATE] id=561: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:59,134 [INFO] [MIGRATE] id=560: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:59,134 [INFO] [MIGRATE] id=559: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:33:59,204 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:34:04,268 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:34:04,269 [WARNING] [TRANSLATE] Skipping previously failed text for another 2089s. text=5S
+5S
+2026-07-29 14:34:04,269 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:04,269 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:34:04,270 [WARNING] [TRANSLATE] Skipping previously failed text for another 2089s. text=5S
+5S
+2026-07-29 14:34:04,270 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:04,270 [INFO] [MIGRATE] id=558: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:04,270 [INFO] [MIGRATE] id=557: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:04,271 [INFO] [MIGRATE] id=556: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:04,271 [INFO] [MIGRATE] id=555: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:04,271 [INFO] [MIGRATE] id=554: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:04,271 [INFO] [MIGRATE] id=553: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:04,271 [INFO] [MIGRATE] id=552: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:04,271 [INFO] [MIGRATE] id=551: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:04,877 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:34:09,941 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:34:09,942 [WARNING] [TRANSLATE] Skipping previously failed text for another 2084s. text=5S
+5S
+2026-07-29 14:34:09,942 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:09,942 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:34:09,943 [WARNING] [TRANSLATE] Skipping previously failed text for another 2084s. text=5S
+5S
+2026-07-29 14:34:09,943 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:09,943 [INFO] [MIGRATE] id=550: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:09,943 [INFO] [MIGRATE] id=549: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:09,943 [INFO] [MIGRATE] id=548: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:09,944 [INFO] [MIGRATE] id=545: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:09,944 [INFO] [MIGRATE] id=544: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:09,944 [INFO] [MIGRATE] id=543: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:09,944 [INFO] [MIGRATE] id=542: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:09,944 [INFO] [MIGRATE] id=541: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:10,104 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:34:15,174 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:34:15,174 [WARNING] [TRANSLATE] Skipping previously failed text for another 2078s. text=5S
+5S
+2026-07-29 14:34:15,175 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:15,175 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:34:15,175 [WARNING] [TRANSLATE] Skipping previously failed text for another 2078s. text=5S
+5S
+2026-07-29 14:34:15,175 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:15,175 [INFO] [MIGRATE] id=540: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:15,176 [INFO] [MIGRATE] id=539: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:15,176 [INFO] [MIGRATE] id=538: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:15,176 [INFO] [MIGRATE] id=537: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:15,177 [INFO] [MIGRATE] id=536: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:15,177 [INFO] [MIGRATE] id=535: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:15,177 [INFO] [MIGRATE] id=534: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:15,177 [INFO] [MIGRATE] id=533: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:15,319 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:34:20,388 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:34:20,389 [WARNING] [TRANSLATE] Skipping previously failed text for another 2073s. text=5S
+5S
+2026-07-29 14:34:20,389 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:20,389 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:34:20,389 [WARNING] [TRANSLATE] Skipping previously failed text for another 2073s. text=5S
+5S
+2026-07-29 14:34:20,389 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:20,390 [INFO] [MIGRATE] id=532: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:20,390 [INFO] [MIGRATE] id=530: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:20,390 [INFO] [MIGRATE] id=529: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:20,390 [INFO] [MIGRATE] id=528: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:20,391 [INFO] [MIGRATE] id=527: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:20,391 [INFO] [MIGRATE] id=526: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:20,391 [INFO] [MIGRATE] id=525: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:20,391 [INFO] [MIGRATE] id=247: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:20,462 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:34:25,554 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:34:25,555 [WARNING] [TRANSLATE] Skipping previously failed text for another 2068s. text=5S
+5S
+2026-07-29 14:34:25,555 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:25,556 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:34:25,556 [WARNING] [TRANSLATE] Skipping previously failed text for another 2068s. text=5S
+5S
+2026-07-29 14:34:25,556 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:25,557 [INFO] [MIGRATE] id=246: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:25,557 [INFO] [MIGRATE] id=245: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:25,557 [INFO] [MIGRATE] id=244: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:25,557 [INFO] [MIGRATE] id=243: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:25,557 [INFO] [MIGRATE] id=242: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:25,557 [INFO] [MIGRATE] id=241: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:25,558 [INFO] [MIGRATE] id=240: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:25,558 [INFO] [MIGRATE] id=239: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:25,614 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:34:30,691 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:34:30,692 [WARNING] [TRANSLATE] Skipping previously failed text for another 2063s. text=5S
+5S
+2026-07-29 14:34:30,692 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:30,693 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:34:30,693 [WARNING] [TRANSLATE] Skipping previously failed text for another 2063s. text=5S
+5S
+2026-07-29 14:34:30,693 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:30,694 [INFO] [MIGRATE] id=238: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:30,694 [INFO] [MIGRATE] id=237: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:30,694 [INFO] [MIGRATE] id=236: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:30,694 [INFO] [MIGRATE] id=234: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:30,695 [INFO] [MIGRATE] id=233: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:30,695 [INFO] [MIGRATE] id=231: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:30,695 [INFO] [MIGRATE] id=230: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:30,695 [INFO] [MIGRATE] id=229: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:30,729 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:34:35,787 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:34:35,787 [WARNING] [TRANSLATE] Skipping previously failed text for another 2058s. text=5S
+5S
+2026-07-29 14:34:35,787 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:35,788 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:34:35,788 [WARNING] [TRANSLATE] Skipping previously failed text for another 2058s. text=5S
+5S
+2026-07-29 14:34:35,788 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:35,788 [INFO] [MIGRATE] id=228: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:35,788 [INFO] [MIGRATE] id=227: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:35,788 [INFO] [MIGRATE] id=226: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:35,788 [INFO] [MIGRATE] id=225: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:35,788 [INFO] [MIGRATE] id=224: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:35,789 [INFO] [MIGRATE] id=223: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:35,789 [INFO] [MIGRATE] id=222: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:35,789 [INFO] [MIGRATE] id=221: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:35,915 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:34:40,977 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:34:40,978 [WARNING] [TRANSLATE] Skipping previously failed text for another 2053s. text=5S
+5S
+2026-07-29 14:34:40,978 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:40,978 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:34:40,979 [WARNING] [TRANSLATE] Skipping previously failed text for another 2053s. text=5S
+5S
+2026-07-29 14:34:40,979 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:40,979 [INFO] [MIGRATE] id=220: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:40,979 [INFO] [MIGRATE] id=219: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:40,979 [INFO] [MIGRATE] id=218: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:40,980 [INFO] [MIGRATE] id=217: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:40,980 [INFO] [MIGRATE] id=216: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:40,980 [INFO] [MIGRATE] id=215: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:40,980 [INFO] [MIGRATE] id=214: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:40,980 [INFO] [MIGRATE] id=213: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:41,148 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:34:46,213 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:34:46,213 [WARNING] [TRANSLATE] Skipping previously failed text for another 2047s. text=5S
+5S
+2026-07-29 14:34:46,213 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:46,213 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:34:46,214 [WARNING] [TRANSLATE] Skipping previously failed text for another 2047s. text=5S
+5S
+2026-07-29 14:34:46,214 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:46,214 [INFO] [MIGRATE] id=212: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:46,214 [INFO] [MIGRATE] id=211: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:46,214 [INFO] [MIGRATE] id=210: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:46,215 [INFO] [MIGRATE] id=209: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:46,215 [INFO] [MIGRATE] id=208: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:46,215 [INFO] [MIGRATE] id=207: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:46,215 [INFO] [MIGRATE] id=206: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:46,215 [INFO] [MIGRATE] id=205: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:47,409 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:34:52,470 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:34:52,470 [WARNING] [TRANSLATE] Skipping previously failed text for another 2041s. text=5S
+5S
+2026-07-29 14:34:52,471 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:52,471 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:34:52,471 [WARNING] [TRANSLATE] Skipping previously failed text for another 2041s. text=5S
+5S
+2026-07-29 14:34:52,471 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:52,472 [INFO] [MIGRATE] id=204: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:52,472 [INFO] [MIGRATE] id=203: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:52,472 [INFO] [MIGRATE] id=202: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:52,472 [INFO] [MIGRATE] id=201: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:52,472 [INFO] [MIGRATE] id=200: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:52,473 [INFO] [MIGRATE] id=199: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:52,473 [INFO] [MIGRATE] id=198: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:52,473 [INFO] [MIGRATE] id=197: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:52,654 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:34:57,713 [INFO] [TRANSLATE] id=2967 (comment): source=[test tiếp]
+2026-07-29 14:34:59,715 [INFO] [TRANSLATE] Completed in 2000 ms. inputLength=9, outputLength=10
+2026-07-29 14:34:59,719 [INFO] [TRANSLATE] id=2967 (comment): result=[テストを継続します。]
+2026-07-29 14:34:59,719 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:34:59,720 [WARNING] [TRANSLATE] Skipping previously failed text for another 2034s. text=5S
+5S
+2026-07-29 14:34:59,720 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:59,720 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:34:59,720 [WARNING] [TRANSLATE] Skipping previously failed text for another 2034s. text=5S
+5S
+2026-07-29 14:34:59,721 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:34:59,721 [INFO] [MIGRATE] id=196: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:59,721 [INFO] [MIGRATE] id=195: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:34:59,721 [INFO] [TRANSLATE] id=513 (comment): source=[The electrical motor has not cover above. As a result, rainwater can easily enter, creating a high risk of electrical incidents.]
+2026-07-29 14:34:59,722 [INFO] [TRANSLATE] id=513 (comment): result=[電動モーターの上部にカバーが設置されていないため、雨水が容易に侵入し、電気事故の危険性が高まっています。]
+2026-07-29 14:34:59,722 [INFO] [TRANSLATE] id=512 (comment): source=[The information board is very old and it can not show well the information.]
+2026-07-29 14:34:59,722 [INFO] [TRANSLATE] id=512 (comment): result=[情報掲示板が非常に古く、情報の表示が十分に行えません。]
+2026-07-29 14:34:59,722 [INFO] [TRANSLATE] id=511 (comment): source=[The high power electric room have the door that is not locked. Anyone can come in.]
+2026-07-29 14:34:59,723 [INFO] [TRANSLATE] id=511 (comment): result=[高出力電気室の扉が施錠されておらず、誰でも立ち入り可能です。]
+2026-07-29 14:34:59,723 [INFO] [TRANSLATE] id=510 (comment): source=[The electric cable have no anything to protect and the cooper core are showed out.]
+2026-07-29 14:34:59,723 [INFO] [TRANSLATE] id=510 (comment): result=[電気ケーブルには保護機構がなく、銅芯が露出しています。]
+2026-07-29 14:34:59,723 [INFO] [TRANSLATE] id=509 (comment): source=[The electrical motor has not cover above. As a result, rainwater can easily enter, creating a high risk of electrical incidents.]
+2026-07-29 14:34:59,724 [INFO] [TRANSLATE] id=509 (comment): result=[電動モーターの上部にカバーが設置されていないため、雨水が容易に侵入し、電気事故の危険性が高まっています。]
+2026-07-29 14:34:59,823 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:34:59,832 [INFO] [TRANSLATE] id=2967 (countermeasure): source=[oke]
+2026-07-29 14:35:01,483 [INFO] [TRANSLATE] Completed in 1650 ms. inputLength=3, outputLength=9
+2026-07-29 14:35:01,503 [INFO] [TRANSLATE] id=2967 (countermeasure): result=[了解いたしました。]
+2026-07-29 14:35:01,659 [INFO] [DB] Batch updated 1 record(s) for countermeasure_jp in one commit.
+2026-07-29 14:35:06,711 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:35:06,711 [WARNING] [TRANSLATE] Skipping previously failed text for another 2027s. text=5S
+5S
+2026-07-29 14:35:06,712 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:35:06,712 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:35:06,712 [WARNING] [TRANSLATE] Skipping previously failed text for another 2027s. text=5S
+5S
+2026-07-29 14:35:06,712 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:35:06,713 [INFO] [TRANSLATE] id=508 (comment): source=[The electrical box rust and NG, it need change new.]
+2026-07-29 14:35:06,713 [INFO] [TRANSLATE] id=508 (comment): result=[電気ボックスが錆びて不良（NG）となっているため、新しいものに交換する必要があります。]
+2026-07-29 14:35:06,714 [INFO] [TRANSLATE] id=507 (comment): source=[The plastic tube & plastic box that protects the electrical cable is broken and open, exposing the cable inside. Rainwater can easily enter, which may cause an ...]
+2026-07-29 14:35:06,714 [INFO] [TRANSLATE] id=507 (comment): result=[電気ケーブルを保護するプラスチックチューブとプラスチックボックスが破損し開口しており、内部のケーブルが露出しています。雨水が容易に侵入できるため、電気事故の危険があります。]
+2026-07-29 14:35:06,715 [INFO] [TRANSLATE] id=506 (comment): source=[The metal cap rust and easily broken.]
+2026-07-29 14:35:06,715 [INFO] [TRANSLATE] id=506 (comment): result=[金属製のキャップは錆びやすく、簡易に破損します。]
+2026-07-29 14:35:06,715 [INFO] [TRANSLATE] id=505 (comment): source=[The plastic tube & plastic box that protects the electrical cable is broken and open, exposing the cable inside. Rainwater can easily enter, which may cause an ...]
+2026-07-29 14:35:06,716 [INFO] [TRANSLATE] id=505 (comment): result=[電気ケーブルを保護するプラスチックチューブとプラスチックボックスが破損し開口しており、内部のケーブルが露出しています。雨水が容易に侵入できるため、電気事故の危険があります。]
+2026-07-29 14:35:06,716 [INFO] [TRANSLATE] id=504 (comment): source=[The electrical motor has not cover above. As a result, rainwater can easily enter, creating a high risk of electrical incidents.]
+2026-07-29 14:35:06,716 [INFO] [TRANSLATE] id=504 (comment): result=[電動モーターの上部にカバーが設置されていないため、雨水が容易に侵入し、電気事故の危険性が高まっています。]
+2026-07-29 14:35:06,716 [INFO] [TRANSLATE] id=491 (comment): source=[Ba vớ văng vào hộp điện]
+2026-07-29 14:35:06,717 [INFO] [TRANSLATE] id=491 (comment): result=[電気ボックスに3本のプラグが落ち込みました。]
+2026-07-29 14:35:06,717 [INFO] [TRANSLATE] id=490 (comment): source=[Tủ điện không được khóa]
+2026-07-29 14:35:06,717 [INFO] [TRANSLATE] id=490 (comment): result=[電気盤は施錠しないでください。]
+2026-07-29 14:35:06,717 [INFO] [TRANSLATE] id=489 (comment): source=[Dây ba lăng không sử dụng không được cố định, nguy cơ vấp ngã/va chạm]
+2026-07-29 14:35:06,718 [INFO] [TRANSLATE] id=489 (comment): result=[未使用の三本線ケーブルは固定せず、つまずきや転倒、衝突の危険が生じます。]
+2026-07-29 14:35:06,827 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:35:11,884 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:35:11,885 [WARNING] [TRANSLATE] Skipping previously failed text for another 2022s. text=5S
+5S
+2026-07-29 14:35:11,885 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:35:11,885 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:35:11,885 [WARNING] [TRANSLATE] Skipping previously failed text for another 2022s. text=5S
+5S
+2026-07-29 14:35:11,885 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:35:11,886 [INFO] [TRANSLATE] id=488 (comment): source=[Thùng hóa chất để không đúng quy định]
+2026-07-29 14:35:11,886 [INFO] [TRANSLATE] id=488 (comment): result=[化学薬品容器の保管が規定に沿っていません。]
+2026-07-29 14:35:11,886 [INFO] [TRANSLATE] id=487 (comment): source=[Dây điện không gọn gàng]
+2026-07-29 14:35:13,759 [INFO] [TRANSLATE] Completed in 1872 ms. inputLength=23, outputLength=10
+2026-07-29 14:35:13,782 [INFO] [TRANSLATE] id=487 (comment): result=[配線が整っていない。]
+2026-07-29 14:35:13,782 [INFO] [TRANSLATE] id=486 (comment): source=[Dây điện lòng thòng, nguy cơ vấp ngã khi đi ngang]
+2026-07-29 14:35:13,783 [INFO] [TRANSLATE] id=486 (comment): result=[露出した電線により横断時のつまずきリスクが発生します。]
+2026-07-29 14:35:13,783 [INFO] [TRANSLATE] id=485 (comment): source=[Dây barcode nhô ra đường đi, có nguy cơ bị vướng]
+2026-07-29 14:35:13,783 [INFO] [TRANSLATE] id=485 (comment): result=[バーコードストリップが通路に突き出ており、絡まりの危険があります。]
+2026-07-29 14:35:13,783 [INFO] [TRANSLATE] id=484 (comment): source=[Đèn hiển thị máy gia công không cố định]
+2026-07-29 14:35:13,784 [INFO] [TRANSLATE] id=484 (comment): result=[加工機の表示灯が固定されていません。]
+2026-07-29 14:35:13,784 [INFO] [TRANSLATE] id=483 (comment): source=[Table không chắc chắn]
+2026-07-29 14:35:13,784 [INFO] [TRANSLATE] id=483 (comment): result=[不安定なテーブル]
+2026-07-29 14:35:13,784 [INFO] [TRANSLATE] id=482 (comment): source=[Cuốn bùn không có cover che chắn]
+2026-07-29 14:35:13,785 [INFO] [TRANSLATE] id=482 (comment): result=[土ブロックに防護カバーが付いていません。]
+2026-07-29 14:35:13,785 [INFO] [TRANSLATE] id=481 (comment): source=[Thước cặp không có cover]
+2026-07-29 14:35:13,785 [INFO] [TRANSLATE] id=481 (comment): result=[キャップ付きのメジャーテープがありません。]
+2026-07-29 14:35:13,815 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:35:18,888 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:35:18,888 [WARNING] [TRANSLATE] Skipping previously failed text for another 2015s. text=5S
+5S
+2026-07-29 14:35:18,888 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:35:18,889 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:35:18,889 [WARNING] [TRANSLATE] Skipping previously failed text for another 2015s. text=5S
+5S
+2026-07-29 14:35:18,889 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:35:18,890 [INFO] [TRANSLATE] id=480 (comment): source=[Thước cặp không có cover]
+2026-07-29 14:35:18,890 [INFO] [TRANSLATE] id=480 (comment): result=[キャップ付きのメジャーテープがありません。]
+2026-07-29 14:35:18,890 [INFO] [TRANSLATE] id=479 (comment): source=[Tool không có cover che chắn]
+2026-07-29 14:35:18,890 [INFO] [TRANSLATE] id=479 (comment): result=[工具に保護カバーが付いていません。]
+2026-07-29 14:35:18,891 [INFO] [TRANSLATE] id=478 (comment): source=[Thùng dầu để trên sàn]
+2026-07-29 14:35:18,891 [INFO] [TRANSLATE] id=478 (comment): result=[油タンクを床に置いた。]
+2026-07-29 14:35:18,891 [INFO] [MIGRATE] id=460: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:35:18,891 [INFO] [MIGRATE] id=459: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:35:18,891 [INFO] [MIGRATE] id=458: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:35:18,892 [INFO] [MIGRATE] id=457: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:35:18,892 [INFO] [MIGRATE] id=456: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:35:19,028 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:35:24,122 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:35:24,123 [WARNING] [TRANSLATE] Skipping previously failed text for another 2009s. text=5S
+5S
+2026-07-29 14:35:24,123 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:35:24,123 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:35:24,124 [WARNING] [TRANSLATE] Skipping previously failed text for another 2009s. text=5S
+5S
+2026-07-29 14:35:24,124 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:35:24,124 [INFO] [MIGRATE] id=455: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:35:24,124 [INFO] [MIGRATE] id=454: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:35:24,125 [INFO] [MIGRATE] id=453: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:35:24,125 [INFO] [MIGRATE] id=452: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:35:24,125 [INFO] [TRANSLATE] id=438 (comment): source=[Cover tủ điện bị bể]
+2026-07-29 14:35:24,125 [INFO] [TRANSLATE] id=438 (comment): result=[電気機器室のカバーが落下しました。]
+2026-07-29 14:35:24,125 [INFO] [TRANSLATE] id=437 (comment): source=[Kệ bị rớt ốc, không cứng vững]
+2026-07-29 14:35:24,126 [INFO] [TRANSLATE] id=437 (comment): result=[棚が落下し、安定していません。]
+2026-07-29 14:35:24,126 [INFO] [TRANSLATE] id=436 (comment): source=[Ống hút hơi dễ va chạm vào đầu người thao tác]
+2026-07-29 14:35:24,126 [INFO] [TRANSLATE] id=436 (comment): result=[吸引管が作業者の頭部に衝突しやすい。]
+2026-07-29 14:35:24,126 [INFO] [TRANSLATE] id=435 (comment): source=[Khu vực hoạt động bị tối]
+2026-07-29 14:35:24,126 [INFO] [TRANSLATE] id=435 (comment): result=[作業エリアが照明不足で暗くなっています。]
+2026-07-29 14:35:24,184 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:35:29,529 [INFO] [TRANSLATE] id=2968 (comment): source=[Dây điện, dây cáp mạng nằm dưới sàn nhà]
+2026-07-29 14:35:32,431 [INFO] [TRANSLATE] Completed in 2900 ms. inputLength=39, outputLength=28
+2026-07-29 14:35:32,434 [INFO] [TRANSLATE] id=2968 (comment): result=[床下に敷設されている電気配線およびネットワークケーブル。]
+2026-07-29 14:35:32,434 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:35:32,434 [WARNING] [TRANSLATE] Skipping previously failed text for another 2001s. text=5S
+5S
+2026-07-29 14:35:32,434 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:35:32,435 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:35:32,435 [WARNING] [TRANSLATE] Skipping previously failed text for another 2001s. text=5S
+5S
+2026-07-29 14:35:32,435 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:35:32,435 [INFO] [TRANSLATE] id=434 (comment): source=[Vị trí để tablet vướng đường đi, dễ va chạm]
+2026-07-29 14:35:32,435 [INFO] [TRANSLATE] id=434 (comment): result=[タブレットが通路を塞ぐ位置で、衝突しやすい。]
+2026-07-29 14:35:32,435 [INFO] [TRANSLATE] id=433 (comment): source=[Vị trí để móc cẩu không an toàn]
+2026-07-29 14:35:32,436 [INFO] [TRANSLATE] id=433 (comment): result=[クレーンフックの取り付け位置が安全でない。]
+2026-07-29 14:35:32,436 [INFO] [TRANSLATE] id=432 (comment): source=[Cover bộ cuốn bùn bị rớt mất ốc, không cứng vững]
+2026-07-29 14:35:32,436 [INFO] [TRANSLATE] id=432 (comment): result=[土壌ローラーのカバーが落下し、ボルトを失い、固定性が不十分です。]
+2026-07-29 14:35:32,436 [INFO] [TRANSLATE] id=431 (comment): source=[Cover bị sụp, cố định không an toàn]
+2026-07-29 14:35:32,436 [INFO] [TRANSLATE] id=431 (comment): result=[カバーが倒壊し、固定状態が安全でありません。]
+2026-07-29 14:35:32,437 [INFO] [TRANSLATE] id=430 (comment): source=[Ổ cắm điện ở vị trí không an toàn]
+2026-07-29 14:35:32,437 [INFO] [TRANSLATE] id=430 (comment): result=[電源コンセントが不適切な位置に設置されています。]
+2026-07-29 14:35:32,437 [INFO] [TRANSLATE] id=429 (comment): source=[Bàn máy khi di chuyển có thể chạm vào người]
+2026-07-29 14:35:32,437 [INFO] [TRANSLATE] id=429 (comment): result=[移動中の機械台が人に接触する恐れがあります。]
+2026-07-29 14:35:32,437 [INFO] [TRANSLATE] id=428 (comment): source=[Dây điện bị hở]
+2026-07-29 14:35:32,437 [INFO] [TRANSLATE] id=428 (comment): result=[電線が露出しています]
+2026-07-29 14:35:32,464 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:35:32,474 [INFO] [TRANSLATE] id=2968 (countermeasure): source=[5S, tuân thủ theo quy định lắp đặt dây điện. Đi dây để dây không chạm sàn]
+2026-07-29 14:35:36,281 [INFO] [TRANSLATE] Completed in 3806 ms. inputLength=73, outputLength=32
+2026-07-29 14:35:36,286 [INFO] [TRANSLATE] id=2968 (countermeasure): result=[5S：配線設置規定に従い、配線を床に触れないように走らせること。]
+2026-07-29 14:35:36,297 [INFO] [DB] Batch updated 1 record(s) for countermeasure_jp in one commit.
+2026-07-29 14:35:41,368 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:35:41,369 [WARNING] [TRANSLATE] Skipping previously failed text for another 1992s. text=5S
+5S
+2026-07-29 14:35:41,369 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:35:41,369 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:35:41,369 [WARNING] [TRANSLATE] Skipping previously failed text for another 1992s. text=5S
+5S
+2026-07-29 14:35:41,370 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:35:41,370 [INFO] [TRANSLATE] id=427 (comment): source=[Cover che bộ cuốn bùn chưa kín, có thể đút tay vào roller dễ dàng]
+2026-07-29 14:35:41,370 [INFO] [TRANSLATE] id=427 (comment): result=[カバーが完全に閉じておらず、ローラーに手を挿入できる状態です。]
+2026-07-29 14:35:41,370 [INFO] [TRANSLATE] id=426 (comment): source=[Dây điện chạm vào chuyển động quay]
+2026-07-29 14:35:41,371 [INFO] [TRANSLATE] id=426 (comment): result=[電線が回転運動に接触しています。]
+2026-07-29 14:35:41,371 [INFO] [TRANSLATE] id=425 (comment): source=[Không có cover dây đai băng tải]
+2026-07-29 14:35:41,371 [INFO] [TRANSLATE] id=425 (comment): result=[コンベアベルトストラップのカバーがありません。]
+2026-07-29 14:35:41,371 [INFO] [TRANSLATE] id=424 (comment): source=[Công tắc để phía đường đi, dễ chạm vào đầu]
+2026-07-29 14:35:41,372 [INFO] [TRANSLATE] id=424 (comment): result=[通路側に設置されたスイッチは、頭部に当たりやすい位置です]
+2026-07-29 14:35:41,372 [INFO] [TRANSLATE] id=415 (comment): source=[Cửa bị hư hỏng gây khó khăn cho người vận hành khi đóng/mở, tiềm ẩn nguy cơ bị dập tay / The damaged door makes it difficult for the operator to open and close ...]
+2026-07-29 14:35:41,372 [INFO] [TRANSLATE] id=415 (comment): result=[操作員が開閉時に困難を感じ、手や指の挟み込みリスクがある破損した扉です。]
+2026-07-29 14:35:41,372 [INFO] [TRANSLATE] id=414 (comment): source=[JABARA bị hở làm mất chức năng che chắn, khiến người vận hành có thể va chạm trực tiếp với các bộ phận kim loại đang chuyển động, dẫn đến trầy xước hoặc xây xát...]
+2026-07-29 14:35:41,372 [INFO] [TRANSLATE] id=414 (comment): result=[JABARAが開放され、保護機能を失ったため、オペレーターは移動する金属部品に直接衝突しやすくなり、擦傷や切創の危険があります。]
+2026-07-29 14:35:41,373 [INFO] [TRANSLATE] id=413 (comment): source=[Dây đai của motor bị hở có thể làm cuốn quần áo rộng hoặc tóc dài, gây chấn thương nghiêm trọng / The motor belt is exposed and can easily catch loose clothing ...]
+2026-07-29 14:35:41,373 [INFO] [TRANSLATE] id=413 (comment): result=[モーターのベルトが露出していると、ゆるい衣服や長髪を巻き込む恐れがあり、重篤な怪我を引き起こす可能性があります。]
+2026-07-29 14:35:41,373 [INFO] [TRANSLATE] id=412 (comment): source=[Cửa máy đang mở trong khi trục máy vẫn quay, người vận hành dùng tay quẹt mực lên thân sản phẩm / The machine door is open while the spindle is rotating, and th...]
+2026-07-29 14:35:41,373 [INFO] [TRANSLATE] id=412 (comment): result=[機械のドアが開いている状態でスピンドルが回転しており、オペレーターは手でインクを製品本体に塗布しています。]
+2026-07-29 14:35:41,705 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:35:46,774 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:35:46,774 [WARNING] [TRANSLATE] Skipping previously failed text for another 1987s. text=5S
+5S
+2026-07-29 14:35:46,774 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:35:46,774 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:35:46,775 [WARNING] [TRANSLATE] Skipping previously failed text for another 1987s. text=5S
+5S
+2026-07-29 14:35:46,775 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:35:46,775 [INFO] [TRANSLATE] id=411 (comment): source=[Đầu nhọn của thước caliper không có cover che chắn, tiềm ẩn nguy cơ gây đứt tay trong quá trình sử dụng / The sharp tip of the caliper does not have a protectiv...]
+2026-07-29 14:35:46,775 [INFO] [TRANSLATE] id=411 (comment): result=[キャリパーの先端に保護カバーが付いていないため、使用中に手を切る危険があります。]
+2026-07-29 14:35:46,775 [INFO] [TRANSLATE] id=410 (comment): source=[Thanh vật liệu dài hơn bar feeder và không có cover che chắn, tiềm ẩn nguy cơ va chạm hoặc trầy xước khi di chuyển trong khu vực / The material bars are longer ...]
+2026-07-29 14:35:46,776 [INFO] [TRANSLATE] id=410 (comment): result=[バー・フィーダーより長い素材バーが保護カバーを備えておらず、搬送中に衝突や擦り傷の危険があります。]
+2026-07-29 14:35:46,776 [INFO] [TRANSLATE] id=403 (comment): source=[Không sử dụng dây để cột cố định]
+2026-07-29 14:35:46,776 [INFO] [TRANSLATE] id=403 (comment): result=[固定用に紐を使用しないでください。]
+2026-07-29 14:35:46,776 [INFO] [TRANSLATE] id=402 (comment): source=[Đầu vào dây điện bám bụi, nguy cơ cháy nổ]
+2026-07-29 14:35:46,776 [INFO] [TRANSLATE] id=402 (comment): result=[入力線に埃が付着しており、火災・爆発の危険があります。]
+2026-07-29 14:35:46,776 [INFO] [TRANSLATE] id=401 (comment): source=[Không dùng đế gỗ kê chân máy]
+2026-07-29 14:35:46,777 [INFO] [TRANSLATE] id=401 (comment): result=[機械の足元に木製台座を使用しないでください。]
+2026-07-29 14:35:46,777 [INFO] [TRANSLATE] id=400 (comment): source=[Bánh xe bị bể, nguy hiểm chất hàng hóa ngã đổ]
+2026-07-29 14:35:46,777 [INFO] [TRANSLATE] id=400 (comment): result=[車輪が破損しており、荷物の転倒や落下の危険があります。]
+2026-07-29 14:35:46,777 [INFO] [TRANSLATE] id=399 (comment): source=[Nhân viên không đeo mắt kính]
+2026-07-29 14:35:46,777 [INFO] [TRANSLATE] id=399 (comment): result=[従業員が保護メガネを着用していません。]
+2026-07-29 14:35:46,777 [INFO] [TRANSLATE] id=398 (comment): source=[Không có cover chắn, nguy cơ rớt pamel, cover bị nứt]
+2026-07-29 14:35:46,778 [INFO] [TRANSLATE] id=398 (comment): result=[カバーが設置されておらず、パーム（手）落下のリスクがあります。また、カバーに亀裂が生じています。]
+2026-07-29 14:35:46,810 [INFO] [DB] Batch updated 8 record(s) for comment_jp in one commit.
+2026-07-29 14:35:51,881 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:35:51,881 [WARNING] [TRANSLATE] Skipping previously failed text for another 1982s. text=5S
+5S
+2026-07-29 14:35:51,881 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:35:51,882 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:35:51,882 [WARNING] [TRANSLATE] Skipping previously failed text for another 1982s. text=5S
+5S
+2026-07-29 14:35:51,882 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:35:51,882 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:35:55,752 [WARNING] [TRANSLATE] LLM returned error. status=400, elapsedMs=3868, body={"error":"The model has crashed without additional information. (Exit code: 18446744072635812000)"}
+2026-07-29 14:35:55,757 [WARNING] [TRANSLATE] Invalid translation; keeping original text.
+2026-07-29 14:35:55,757 [WARNING] [TRANSLATE] Next retry for this text will wait 300s.
+2026-07-29 14:35:55,758 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:35:55,758 [INFO] [MIGRATE] id=393: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:35:55,758 [INFO] [MIGRATE] id=392: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:35:55,758 [INFO] [MIGRATE] id=391: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:35:55,759 [INFO] [MIGRATE] id=390: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:35:55,759 [INFO] [MIGRATE] id=389: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:35:55,759 [INFO] [MIGRATE] id=388: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:35:55,759 [INFO] [MIGRATE] id=387: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:35:56,253 [INFO] [DB] Batch updated 7 record(s) for comment_jp in one commit.
+2026-07-29 14:36:01,311 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:36:01,312 [WARNING] [TRANSLATE] Skipping previously failed text for another 1972s. text=5S
+5S
+2026-07-29 14:36:01,312 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:01,312 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:36:01,313 [WARNING] [TRANSLATE] Skipping previously failed text for another 1972s. text=5S
+5S
+2026-07-29 14:36:01,313 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:01,313 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:36:01,314 [WARNING] [TRANSLATE] Skipping previously failed text for another 295s. text=Tủ điện không đóng
+2026-07-29 14:36:01,314 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:01,314 [INFO] [MIGRATE] id=386: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:36:01,315 [INFO] [MIGRATE] id=385: copying existing Japanese from comment to comment_jp.
+2026-07-29 14:36:01,323 [INFO] [DB] Batch updated 2 record(s) for comment_jp in one commit.
+2026-07-29 14:36:06,380 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:36:06,381 [WARNING] [TRANSLATE] Skipping previously failed text for another 1967s. text=5S
+5S
+2026-07-29 14:36:06,381 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:06,381 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:36:06,382 [WARNING] [TRANSLATE] Skipping previously failed text for another 1967s. text=5S
+5S
+2026-07-29 14:36:06,382 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:06,382 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:36:06,383 [WARNING] [TRANSLATE] Skipping previously failed text for another 290s. text=Tủ điện không đóng
+2026-07-29 14:36:06,383 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:11,467 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:36:11,468 [WARNING] [TRANSLATE] Skipping previously failed text for another 1962s. text=5S
+5S
+2026-07-29 14:36:11,468 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:11,468 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:36:11,468 [WARNING] [TRANSLATE] Skipping previously failed text for another 1962s. text=5S
+5S
+2026-07-29 14:36:11,469 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:11,469 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:36:11,469 [WARNING] [TRANSLATE] Skipping previously failed text for another 285s. text=Tủ điện không đóng
+2026-07-29 14:36:11,469 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:16,536 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:36:16,537 [WARNING] [TRANSLATE] Skipping previously failed text for another 1957s. text=5S
+5S
+2026-07-29 14:36:16,537 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:16,537 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:36:16,537 [WARNING] [TRANSLATE] Skipping previously failed text for another 1957s. text=5S
+5S
+2026-07-29 14:36:16,537 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:16,538 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:36:16,538 [WARNING] [TRANSLATE] Skipping previously failed text for another 280s. text=Tủ điện không đóng
+2026-07-29 14:36:16,538 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:21,619 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:36:21,620 [WARNING] [TRANSLATE] Skipping previously failed text for another 1952s. text=5S
+5S
+2026-07-29 14:36:21,620 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:21,620 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:36:21,621 [WARNING] [TRANSLATE] Skipping previously failed text for another 1952s. text=5S
+5S
+2026-07-29 14:36:21,621 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:21,621 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:36:21,621 [WARNING] [TRANSLATE] Skipping previously failed text for another 275s. text=Tủ điện không đóng
+2026-07-29 14:36:21,621 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:26,693 [INFO] [TRANSLATE] id=2967 (comment): source=[test tiếp]
+2026-07-29 14:36:26,694 [INFO] [TRANSLATE] id=2967 (comment): result=[テストを継続します。]
+2026-07-29 14:36:26,694 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:36:26,694 [WARNING] [TRANSLATE] Skipping previously failed text for another 1947s. text=5S
+5S
+2026-07-29 14:36:26,695 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:26,695 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:36:26,695 [WARNING] [TRANSLATE] Skipping previously failed text for another 1947s. text=5S
+5S
+2026-07-29 14:36:26,695 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:26,696 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:36:26,696 [WARNING] [TRANSLATE] Skipping previously failed text for another 270s. text=Tủ điện không đóng
+2026-07-29 14:36:26,696 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:26,835 [INFO] [DB] Batch updated 1 record(s) for comment_jp in one commit.
+2026-07-29 14:36:26,845 [INFO] [TRANSLATE] id=2967 (countermeasure): source=[oke]
+2026-07-29 14:36:26,845 [INFO] [TRANSLATE] id=2967 (countermeasure): result=[了解いたしました。]
+2026-07-29 14:36:27,082 [INFO] [DB] Batch updated 1 record(s) for countermeasure_jp in one commit.
+2026-07-29 14:36:32,131 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:36:32,131 [WARNING] [TRANSLATE] Skipping previously failed text for another 1941s. text=5S
+5S
+2026-07-29 14:36:32,131 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:32,131 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:36:32,131 [WARNING] [TRANSLATE] Skipping previously failed text for another 1941s. text=5S
+5S
+2026-07-29 14:36:32,132 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:32,132 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:36:32,132 [WARNING] [TRANSLATE] Skipping previously failed text for another 264s. text=Tủ điện không đóng
+2026-07-29 14:36:32,132 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:37,194 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:36:37,195 [WARNING] [TRANSLATE] Skipping previously failed text for another 1936s. text=5S
+5S
+2026-07-29 14:36:37,195 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:37,195 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:36:37,196 [WARNING] [TRANSLATE] Skipping previously failed text for another 1936s. text=5S
+5S
+2026-07-29 14:36:37,196 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:37,196 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:36:37,197 [WARNING] [TRANSLATE] Skipping previously failed text for another 259s. text=Tủ điện không đóng
+2026-07-29 14:36:37,197 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:42,255 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:36:42,256 [WARNING] [TRANSLATE] Skipping previously failed text for another 1931s. text=5S
+5S
+2026-07-29 14:36:42,256 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:42,256 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:36:42,256 [WARNING] [TRANSLATE] Skipping previously failed text for another 1931s. text=5S
+5S
+2026-07-29 14:36:42,257 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:42,257 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:36:42,257 [WARNING] [TRANSLATE] Skipping previously failed text for another 254s. text=Tủ điện không đóng
+2026-07-29 14:36:42,258 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:47,333 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:36:47,334 [WARNING] [TRANSLATE] Skipping previously failed text for another 1926s. text=5S
+5S
+2026-07-29 14:36:47,334 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:47,334 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:36:47,335 [WARNING] [TRANSLATE] Skipping previously failed text for another 1926s. text=5S
+5S
+2026-07-29 14:36:47,335 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:47,335 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:36:47,335 [WARNING] [TRANSLATE] Skipping previously failed text for another 249s. text=Tủ điện không đóng
+2026-07-29 14:36:47,335 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:52,400 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:36:52,400 [WARNING] [TRANSLATE] Skipping previously failed text for another 1921s. text=5S
+5S
+2026-07-29 14:36:52,401 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:52,401 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:36:52,402 [WARNING] [TRANSLATE] Skipping previously failed text for another 1921s. text=5S
+5S
+2026-07-29 14:36:52,402 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:52,402 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:36:52,403 [WARNING] [TRANSLATE] Skipping previously failed text for another 244s. text=Tủ điện không đóng
+2026-07-29 14:36:52,403 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:57,474 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:36:57,474 [WARNING] [TRANSLATE] Skipping previously failed text for another 1916s. text=5S
+5S
+2026-07-29 14:36:57,474 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:57,475 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:36:57,475 [WARNING] [TRANSLATE] Skipping previously failed text for another 1916s. text=5S
+5S
+2026-07-29 14:36:57,475 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:36:57,476 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:36:57,476 [WARNING] [TRANSLATE] Skipping previously failed text for another 239s. text=Tủ điện không đóng
+2026-07-29 14:36:57,476 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:02,530 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:37:02,531 [WARNING] [TRANSLATE] Skipping previously failed text for another 1911s. text=5S
+5S
+2026-07-29 14:37:02,531 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:02,531 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:37:02,532 [WARNING] [TRANSLATE] Skipping previously failed text for another 1911s. text=5S
+5S
+2026-07-29 14:37:02,532 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:02,532 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:37:02,532 [WARNING] [TRANSLATE] Skipping previously failed text for another 234s. text=Tủ điện không đóng
+2026-07-29 14:37:02,532 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:07,590 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:37:07,591 [WARNING] [TRANSLATE] Skipping previously failed text for another 1906s. text=5S
+5S
+2026-07-29 14:37:07,591 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:07,591 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:37:07,592 [WARNING] [TRANSLATE] Skipping previously failed text for another 1906s. text=5S
+5S
+2026-07-29 14:37:07,592 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:07,592 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:37:07,593 [WARNING] [TRANSLATE] Skipping previously failed text for another 229s. text=Tủ điện không đóng
+2026-07-29 14:37:07,593 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:12,661 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:37:12,662 [WARNING] [TRANSLATE] Skipping previously failed text for another 1901s. text=5S
+5S
+2026-07-29 14:37:12,662 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:12,662 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:37:12,663 [WARNING] [TRANSLATE] Skipping previously failed text for another 1901s. text=5S
+5S
+2026-07-29 14:37:12,663 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:12,663 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:37:12,663 [WARNING] [TRANSLATE] Skipping previously failed text for another 224s. text=Tủ điện không đóng
+2026-07-29 14:37:12,663 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:17,724 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:37:17,725 [WARNING] [TRANSLATE] Skipping previously failed text for another 1896s. text=5S
+5S
+2026-07-29 14:37:17,725 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:17,725 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:37:17,725 [WARNING] [TRANSLATE] Skipping previously failed text for another 1896s. text=5S
+5S
+2026-07-29 14:37:17,726 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:17,726 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:37:17,726 [WARNING] [TRANSLATE] Skipping previously failed text for another 219s. text=Tủ điện không đóng
+2026-07-29 14:37:17,727 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:22,799 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:37:22,800 [WARNING] [TRANSLATE] Skipping previously failed text for another 1891s. text=5S
+5S
+2026-07-29 14:37:22,800 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:22,800 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:37:22,800 [WARNING] [TRANSLATE] Skipping previously failed text for another 1891s. text=5S
+5S
+2026-07-29 14:37:22,801 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:22,801 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:37:22,801 [WARNING] [TRANSLATE] Skipping previously failed text for another 213s. text=Tủ điện không đóng
+2026-07-29 14:37:22,802 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:27,868 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:37:27,869 [WARNING] [TRANSLATE] Skipping previously failed text for another 1886s. text=5S
+5S
+2026-07-29 14:37:27,869 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:27,869 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:37:27,869 [WARNING] [TRANSLATE] Skipping previously failed text for another 1886s. text=5S
+5S
+2026-07-29 14:37:27,870 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:27,870 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:37:27,870 [WARNING] [TRANSLATE] Skipping previously failed text for another 208s. text=Tủ điện không đóng
+2026-07-29 14:37:27,870 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:32,931 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:37:32,932 [WARNING] [TRANSLATE] Skipping previously failed text for another 1881s. text=5S
+5S
+2026-07-29 14:37:32,932 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:32,932 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:37:32,933 [WARNING] [TRANSLATE] Skipping previously failed text for another 1881s. text=5S
+5S
+2026-07-29 14:37:32,933 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:32,933 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:37:32,934 [WARNING] [TRANSLATE] Skipping previously failed text for another 203s. text=Tủ điện không đóng
+2026-07-29 14:37:32,934 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:38,007 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:37:38,007 [WARNING] [TRANSLATE] Skipping previously failed text for another 1876s. text=5S
+5S
+2026-07-29 14:37:38,008 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:38,008 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:37:38,008 [WARNING] [TRANSLATE] Skipping previously failed text for another 1876s. text=5S
+5S
+2026-07-29 14:37:38,008 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:38,009 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:37:38,009 [WARNING] [TRANSLATE] Skipping previously failed text for another 198s. text=Tủ điện không đóng
+2026-07-29 14:37:38,009 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:43,072 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:37:43,073 [WARNING] [TRANSLATE] Skipping previously failed text for another 1870s. text=5S
+5S
+2026-07-29 14:37:43,073 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:43,074 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:37:43,074 [WARNING] [TRANSLATE] Skipping previously failed text for another 1870s. text=5S
+5S
+2026-07-29 14:37:43,074 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:43,074 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:37:43,075 [WARNING] [TRANSLATE] Skipping previously failed text for another 193s. text=Tủ điện không đóng
+2026-07-29 14:37:43,075 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:48,133 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:37:48,134 [WARNING] [TRANSLATE] Skipping previously failed text for another 1865s. text=5S
+5S
+2026-07-29 14:37:48,134 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:48,134 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:37:48,134 [WARNING] [TRANSLATE] Skipping previously failed text for another 1865s. text=5S
+5S
+2026-07-29 14:37:48,135 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:48,135 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:37:48,135 [WARNING] [TRANSLATE] Skipping previously failed text for another 188s. text=Tủ điện không đóng
+2026-07-29 14:37:48,135 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:53,197 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:37:53,197 [WARNING] [TRANSLATE] Skipping previously failed text for another 1860s. text=5S
+5S
+2026-07-29 14:37:53,198 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:53,198 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:37:53,198 [WARNING] [TRANSLATE] Skipping previously failed text for another 1860s. text=5S
+5S
+2026-07-29 14:37:53,199 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:53,199 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:37:53,199 [WARNING] [TRANSLATE] Skipping previously failed text for another 183s. text=Tủ điện không đóng
+2026-07-29 14:37:53,199 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:58,258 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:37:58,258 [WARNING] [TRANSLATE] Skipping previously failed text for another 1855s. text=5S
+5S
+2026-07-29 14:37:58,258 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:58,259 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:37:58,259 [WARNING] [TRANSLATE] Skipping previously failed text for another 1855s. text=5S
+5S
+2026-07-29 14:37:58,259 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:37:58,259 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:37:58,260 [WARNING] [TRANSLATE] Skipping previously failed text for another 178s. text=Tủ điện không đóng
+2026-07-29 14:37:58,260 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:03,333 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:38:03,334 [WARNING] [TRANSLATE] Skipping previously failed text for another 1850s. text=5S
+5S
+2026-07-29 14:38:03,334 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:03,334 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:38:03,334 [WARNING] [TRANSLATE] Skipping previously failed text for another 1850s. text=5S
+5S
+2026-07-29 14:38:03,334 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:03,335 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:38:03,335 [WARNING] [TRANSLATE] Skipping previously failed text for another 173s. text=Tủ điện không đóng
+2026-07-29 14:38:03,335 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:08,395 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:38:08,396 [WARNING] [TRANSLATE] Skipping previously failed text for another 1845s. text=5S
+5S
+2026-07-29 14:38:08,396 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:08,396 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:38:08,397 [WARNING] [TRANSLATE] Skipping previously failed text for another 1845s. text=5S
+5S
+2026-07-29 14:38:08,397 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:08,397 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:38:08,397 [WARNING] [TRANSLATE] Skipping previously failed text for another 168s. text=Tủ điện không đóng
+2026-07-29 14:38:08,398 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:13,459 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:38:13,460 [WARNING] [TRANSLATE] Skipping previously failed text for another 1840s. text=5S
+5S
+2026-07-29 14:38:13,460 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:13,460 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:38:13,461 [WARNING] [TRANSLATE] Skipping previously failed text for another 1840s. text=5S
+5S
+2026-07-29 14:38:13,461 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:13,461 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:38:13,461 [WARNING] [TRANSLATE] Skipping previously failed text for another 163s. text=Tủ điện không đóng
+2026-07-29 14:38:13,461 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:18,520 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:38:18,520 [WARNING] [TRANSLATE] Skipping previously failed text for another 1835s. text=5S
+5S
+2026-07-29 14:38:18,521 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:18,521 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:38:18,521 [WARNING] [TRANSLATE] Skipping previously failed text for another 1835s. text=5S
+5S
+2026-07-29 14:38:18,521 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:18,521 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:38:18,521 [WARNING] [TRANSLATE] Skipping previously failed text for another 158s. text=Tủ điện không đóng
+2026-07-29 14:38:18,521 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:23,659 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:38:23,660 [WARNING] [TRANSLATE] Skipping previously failed text for another 1830s. text=5S
+5S
+2026-07-29 14:38:23,660 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:23,660 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:38:23,661 [WARNING] [TRANSLATE] Skipping previously failed text for another 1830s. text=5S
+5S
+2026-07-29 14:38:23,661 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:23,661 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:38:23,661 [WARNING] [TRANSLATE] Skipping previously failed text for another 153s. text=Tủ điện không đóng
+2026-07-29 14:38:23,662 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:28,745 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:38:28,745 [WARNING] [TRANSLATE] Skipping previously failed text for another 1825s. text=5S
+5S
+2026-07-29 14:38:28,745 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:28,746 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:38:28,746 [WARNING] [TRANSLATE] Skipping previously failed text for another 1825s. text=5S
+5S
+2026-07-29 14:38:28,746 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:28,746 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:38:28,746 [WARNING] [TRANSLATE] Skipping previously failed text for another 148s. text=Tủ điện không đóng
+2026-07-29 14:38:28,746 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:33,800 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:38:33,800 [WARNING] [TRANSLATE] Skipping previously failed text for another 1820s. text=5S
+5S
+2026-07-29 14:38:33,801 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:33,801 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:38:33,801 [WARNING] [TRANSLATE] Skipping previously failed text for another 1820s. text=5S
+5S
+2026-07-29 14:38:33,801 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:33,801 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:38:33,802 [WARNING] [TRANSLATE] Skipping previously failed text for another 142s. text=Tủ điện không đóng
+2026-07-29 14:38:33,802 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:38,860 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:38:38,860 [WARNING] [TRANSLATE] Skipping previously failed text for another 1815s. text=5S
+5S
+2026-07-29 14:38:38,861 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:38,861 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:38:38,861 [WARNING] [TRANSLATE] Skipping previously failed text for another 1815s. text=5S
+5S
+2026-07-29 14:38:38,861 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:38,861 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:38:38,862 [WARNING] [TRANSLATE] Skipping previously failed text for another 137s. text=Tủ điện không đóng
+2026-07-29 14:38:38,862 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:43,924 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:38:43,924 [WARNING] [TRANSLATE] Skipping previously failed text for another 1810s. text=5S
+5S
+2026-07-29 14:38:43,925 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:43,925 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:38:43,925 [WARNING] [TRANSLATE] Skipping previously failed text for another 1810s. text=5S
+5S
+2026-07-29 14:38:43,925 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:43,926 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:38:43,926 [WARNING] [TRANSLATE] Skipping previously failed text for another 132s. text=Tủ điện không đóng
+2026-07-29 14:38:43,926 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:48,981 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:38:48,982 [WARNING] [TRANSLATE] Skipping previously failed text for another 1805s. text=5S
+5S
+2026-07-29 14:38:48,982 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:48,982 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:38:48,983 [WARNING] [TRANSLATE] Skipping previously failed text for another 1805s. text=5S
+5S
+2026-07-29 14:38:48,983 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:48,983 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:38:48,983 [WARNING] [TRANSLATE] Skipping previously failed text for another 127s. text=Tủ điện không đóng
+2026-07-29 14:38:48,983 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:54,039 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:38:54,039 [WARNING] [TRANSLATE] Skipping previously failed text for another 1800s. text=5S
+5S
+2026-07-29 14:38:54,040 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:54,040 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:38:54,040 [WARNING] [TRANSLATE] Skipping previously failed text for another 1800s. text=5S
+5S
+2026-07-29 14:38:54,040 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:54,041 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:38:54,041 [WARNING] [TRANSLATE] Skipping previously failed text for another 122s. text=Tủ điện không đóng
+2026-07-29 14:38:54,041 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:59,140 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:38:59,141 [WARNING] [TRANSLATE] Skipping previously failed text for another 1794s. text=5S
+5S
+2026-07-29 14:38:59,141 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:59,142 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:38:59,142 [WARNING] [TRANSLATE] Skipping previously failed text for another 1794s. text=5S
+5S
+2026-07-29 14:38:59,142 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:38:59,143 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:38:59,143 [WARNING] [TRANSLATE] Skipping previously failed text for another 117s. text=Tủ điện không đóng
+2026-07-29 14:38:59,143 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:04,365 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:39:04,366 [WARNING] [TRANSLATE] Skipping previously failed text for another 1789s. text=5S
+5S
+2026-07-29 14:39:04,366 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:04,367 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:39:04,367 [WARNING] [TRANSLATE] Skipping previously failed text for another 1789s. text=5S
+5S
+2026-07-29 14:39:04,367 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:04,367 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:39:04,367 [WARNING] [TRANSLATE] Skipping previously failed text for another 112s. text=Tủ điện không đóng
+2026-07-29 14:39:04,368 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:09,899 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:39:09,899 [WARNING] [TRANSLATE] Skipping previously failed text for another 1784s. text=5S
+5S
+2026-07-29 14:39:09,899 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:09,899 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:39:09,900 [WARNING] [TRANSLATE] Skipping previously failed text for another 1784s. text=5S
+5S
+2026-07-29 14:39:09,900 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:09,900 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:39:09,900 [WARNING] [TRANSLATE] Skipping previously failed text for another 106s. text=Tủ điện không đóng
+2026-07-29 14:39:09,900 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:14,974 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:39:14,974 [WARNING] [TRANSLATE] Skipping previously failed text for another 1779s. text=5S
+5S
+2026-07-29 14:39:14,975 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:14,975 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:39:14,976 [WARNING] [TRANSLATE] Skipping previously failed text for another 1779s. text=5S
+5S
+2026-07-29 14:39:14,976 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:14,976 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:39:14,977 [WARNING] [TRANSLATE] Skipping previously failed text for another 101s. text=Tủ điện không đóng
+2026-07-29 14:39:14,977 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:20,052 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:39:20,053 [WARNING] [TRANSLATE] Skipping previously failed text for another 1773s. text=5S
+5S
+2026-07-29 14:39:20,053 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:20,053 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:39:20,054 [WARNING] [TRANSLATE] Skipping previously failed text for another 1773s. text=5S
+5S
+2026-07-29 14:39:20,054 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:20,054 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:39:20,054 [WARNING] [TRANSLATE] Skipping previously failed text for another 96s. text=Tủ điện không đóng
+2026-07-29 14:39:20,054 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:25,154 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:39:25,154 [WARNING] [TRANSLATE] Skipping previously failed text for another 1768s. text=5S
+5S
+2026-07-29 14:39:25,155 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:25,155 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:39:25,155 [WARNING] [TRANSLATE] Skipping previously failed text for another 1768s. text=5S
+5S
+2026-07-29 14:39:25,155 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:25,155 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:39:25,156 [WARNING] [TRANSLATE] Skipping previously failed text for another 91s. text=Tủ điện không đóng
+2026-07-29 14:39:25,156 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:30,267 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:39:30,267 [WARNING] [TRANSLATE] Skipping previously failed text for another 1763s. text=5S
+5S
+2026-07-29 14:39:30,268 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:30,268 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:39:30,268 [WARNING] [TRANSLATE] Skipping previously failed text for another 1763s. text=5S
+5S
+2026-07-29 14:39:30,268 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:30,269 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:39:30,269 [WARNING] [TRANSLATE] Skipping previously failed text for another 86s. text=Tủ điện không đóng
+2026-07-29 14:39:30,270 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:35,355 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:39:35,356 [WARNING] [TRANSLATE] Skipping previously failed text for another 1758s. text=5S
+5S
+2026-07-29 14:39:35,356 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:35,357 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:39:35,357 [WARNING] [TRANSLATE] Skipping previously failed text for another 1758s. text=5S
+5S
+2026-07-29 14:39:35,357 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:35,358 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:39:35,358 [WARNING] [TRANSLATE] Skipping previously failed text for another 81s. text=Tủ điện không đóng
+2026-07-29 14:39:35,358 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:40,470 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:39:40,471 [WARNING] [TRANSLATE] Skipping previously failed text for another 1753s. text=5S
+5S
+2026-07-29 14:39:40,471 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:40,472 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:39:40,472 [WARNING] [TRANSLATE] Skipping previously failed text for another 1753s. text=5S
+5S
+2026-07-29 14:39:40,473 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:40,473 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:39:40,473 [WARNING] [TRANSLATE] Skipping previously failed text for another 76s. text=Tủ điện không đóng
+2026-07-29 14:39:40,473 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:45,539 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:39:45,540 [WARNING] [TRANSLATE] Skipping previously failed text for another 1748s. text=5S
+5S
+2026-07-29 14:39:45,540 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:45,540 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:39:45,540 [WARNING] [TRANSLATE] Skipping previously failed text for another 1748s. text=5S
+5S
+2026-07-29 14:39:45,540 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:45,540 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:39:45,540 [WARNING] [TRANSLATE] Skipping previously failed text for another 71s. text=Tủ điện không đóng
+2026-07-29 14:39:45,541 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:50,628 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:39:50,629 [WARNING] [TRANSLATE] Skipping previously failed text for another 1743s. text=5S
+5S
+2026-07-29 14:39:50,629 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:50,630 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:39:50,630 [WARNING] [TRANSLATE] Skipping previously failed text for another 1743s. text=5S
+5S
+2026-07-29 14:39:50,630 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:50,630 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:39:50,631 [WARNING] [TRANSLATE] Skipping previously failed text for another 66s. text=Tủ điện không đóng
+2026-07-29 14:39:50,631 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:55,699 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:39:55,700 [WARNING] [TRANSLATE] Skipping previously failed text for another 1738s. text=5S
+5S
+2026-07-29 14:39:55,700 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:55,700 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:39:55,700 [WARNING] [TRANSLATE] Skipping previously failed text for another 1738s. text=5S
+5S
+2026-07-29 14:39:55,701 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:39:55,701 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:39:55,701 [WARNING] [TRANSLATE] Skipping previously failed text for another 61s. text=Tủ điện không đóng
+2026-07-29 14:39:55,701 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:40:00,839 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:40:00,840 [WARNING] [TRANSLATE] Skipping previously failed text for another 1733s. text=5S
+5S
+2026-07-29 14:40:00,840 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:40:00,840 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:40:00,840 [WARNING] [TRANSLATE] Skipping previously failed text for another 1733s. text=5S
+5S
+2026-07-29 14:40:00,840 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:40:00,840 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:40:00,841 [WARNING] [TRANSLATE] Skipping previously failed text for another 55s. text=Tủ điện không đóng
+2026-07-29 14:40:00,841 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:40:05,897 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:40:05,898 [WARNING] [TRANSLATE] Skipping previously failed text for another 1728s. text=5S
+5S
+2026-07-29 14:40:05,899 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:40:05,899 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:40:05,899 [WARNING] [TRANSLATE] Skipping previously failed text for another 1728s. text=5S
+5S
+2026-07-29 14:40:05,900 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:40:05,900 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:40:05,900 [WARNING] [TRANSLATE] Skipping previously failed text for another 50s. text=Tủ điện không đóng
+2026-07-29 14:40:05,900 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:40:10,961 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:40:10,962 [WARNING] [TRANSLATE] Skipping previously failed text for another 1723s. text=5S
+5S
+2026-07-29 14:40:10,962 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:40:10,963 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:40:10,963 [WARNING] [TRANSLATE] Skipping previously failed text for another 1723s. text=5S
+5S
+2026-07-29 14:40:10,964 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:40:10,964 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:40:10,964 [WARNING] [TRANSLATE] Skipping previously failed text for another 45s. text=Tủ điện không đóng
+2026-07-29 14:40:10,965 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:40:16,020 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:40:16,021 [WARNING] [TRANSLATE] Skipping previously failed text for another 1718s. text=5S
+5S
+2026-07-29 14:40:16,021 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:40:16,021 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:40:16,021 [WARNING] [TRANSLATE] Skipping previously failed text for another 1718s. text=5S
+5S
+2026-07-29 14:40:16,022 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:40:16,022 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:40:16,022 [WARNING] [TRANSLATE] Skipping previously failed text for another 40s. text=Tủ điện không đóng
+2026-07-29 14:40:16,022 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:40:21,096 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 14:40:21,097 [WARNING] [TRANSLATE] Skipping previously failed text for another 1712s. text=5S
+5S
+2026-07-29 14:40:21,097 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:40:21,097 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 14:40:21,097 [WARNING] [TRANSLATE] Skipping previously failed text for another 1712s. text=5S
+5S
+2026-07-29 14:40:21,098 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:40:21,098 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 14:40:21,098 [WARNING] [TRANSLATE] Skipping previously failed text for another 35s. text=Tủ điện không đóng
+2026-07-29 14:40:21,098 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 14:40:22,110 [INFO] [SERVICE] Shutdown signal received (2). Finishing current cycle...
+2026-07-29 14:40:22,139 [INFO] [SERVICE] Stopped.
+2026-07-29 15:12:45,220 [ERROR] [SERVICE] Could not start (DB connect / app-lock / work-state setup failed).
+Traceback (most recent call last):
+  File "D:\Viet\App\patrol_translate_daemon\patrol_translate_service.py", line 1242, in run
+    ensure_work_state_table(db, cfg)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\Viet\App\patrol_translate_daemon\patrol_translate_service.py", line 912, in ensure_work_state_table
+    cursor.execute(sql)
+    ~~~~~~~~~~~~~~^^^^^
+pyodbc.ProgrammingError: ('42000', "[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]CREATE TABLE permission denied in database 'F2Database'. (262) (SQLExecDirectW)")
+2026-07-29 15:18:30,901 [INFO] [SERVICE] Starting. table=F2_Patrol_Report, pairs=(('comment', 'comment_jp'), ('countermeasure', 'countermeasure_jp'), ('comment_jp', 'comment'), ('countermeasure_jp', 'countermeasure')), watermark=2026-07-29 14:35:27.700000/2968, pollInterval=5.0s, dryRun=False
+2026-07-29 15:18:30,972 [INFO] [TRANSLATE] id=2969 (comment): source=[Tools không có cover che chắnva chạm gây chấn thương]
+2026-07-29 15:18:30,977 [INFO] [TRANSLATE] id=2969 (comment): result=[保護カバーのない工具が衝突し、怪我を引き起こす。]
+2026-07-29 15:18:30,983 [INFO] [TRANSLATE] id=2745 (comment): source=[5S
+5S]
+2026-07-29 15:18:31,368 [INFO] [TRANSLATE] Completed in 381 ms. inputLength=5, outputLength=2
+2026-07-29 15:18:31,379 [WARNING] [TRANSLATE] Invalid translation; keeping original text.
+2026-07-29 15:18:31,379 [WARNING] [TRANSLATE] Next retry for this text will wait 3600s.
+2026-07-29 15:18:31,379 [WARNING] [TRANSLATE] id=2745 (comment): translation unchanged/invalid, skipping.
+2026-07-29 15:18:31,393 [INFO] [TRANSLATE] id=630 (comment): source=[5S
+5S]
+2026-07-29 15:18:31,393 [WARNING] [TRANSLATE] Skipping previously failed text for another 3600s. text=5S
+5S
+2026-07-29 15:18:31,393 [WARNING] [TRANSLATE] id=630 (comment): translation unchanged/invalid, skipping.
+2026-07-29 15:18:31,411 [INFO] [TRANSLATE] id=397 (comment): source=[Tủ điện không đóng]
+2026-07-29 15:18:36,882 [WARNING] [TRANSLATE] LLM returned error. status=400, elapsedMs=5470, body={"error":"The model has crashed without additional information. (Exit code: 18446744072635812000)"}
+2026-07-29 15:18:36,890 [WARNING] [TRANSLATE] Invalid translation; keeping original text.
+2026-07-29 15:18:36,890 [WARNING] [TRANSLATE] Next retry for this text will wait 600s.
+2026-07-29 15:18:36,891 [WARNING] [TRANSLATE] id=397 (comment): translation unchanged/invalid, skipping.
+2026-07-29 15:18:36,948 [INFO] [DB] Batch updated 1 record(s) for comment_jp in one commit.
+2026-07-29 15:18:42,207 [INFO] [MIGRATE] id=2844: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:18:42,207 [INFO] [MIGRATE] id=2843: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:18:42,216 [INFO] [MIGRATE] id=2841: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:18:42,260 [INFO] [DB] Batch updated 3 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:18:47,387 [INFO] [MIGRATE] id=2838: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:18:47,461 [INFO] [MIGRATE] id=2833: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:18:47,598 [INFO] [DB] Batch updated 2 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:18:52,761 [INFO] [MIGRATE] id=2822: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:18:52,770 [INFO] [MIGRATE] id=2820: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:18:52,804 [INFO] [DB] Batch updated 2 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:18:57,885 [INFO] [MIGRATE] id=2818: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:18:57,885 [INFO] [MIGRATE] id=2817: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:18:57,896 [INFO] [TRANSLATE] id=2815 (countermeasure): source=[Thay mới tay quay
+Thay mới tay quay]
+2026-07-29 15:19:08,184 [INFO] [TRANSLATE] Completed in 10287 ms. inputLength=35, outputLength=12
+2026-07-29 15:19:08,189 [INFO] [TRANSLATE] id=2815 (countermeasure): result=[回転ハンドルを交換する。]
+2026-07-29 15:19:08,189 [INFO] [MIGRATE] id=2814: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:08,190 [INFO] [MIGRATE] id=2813: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:08,227 [INFO] [MIGRATE] id=2810: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:08,290 [INFO] [DB] Batch updated 6 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:19:13,367 [INFO] [MIGRATE] id=2809: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:13,368 [INFO] [MIGRATE] id=2808: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:13,368 [INFO] [TRANSLATE] id=2807 (countermeasure): source=[5S
+5S]
+2026-07-29 15:19:13,369 [WARNING] [TRANSLATE] Skipping previously failed text for another 3558s. text=5S
+5S
+2026-07-29 15:19:13,369 [WARNING] [TRANSLATE] id=2807 (countermeasure): translation unchanged/invalid, skipping.
+2026-07-29 15:19:13,392 [INFO] [TRANSLATE] id=2805 (countermeasure): source=[5S
+5S]
+2026-07-29 15:19:13,392 [WARNING] [TRANSLATE] Skipping previously failed text for another 3558s. text=5S
+5S
+2026-07-29 15:19:13,393 [WARNING] [TRANSLATE] id=2805 (countermeasure): translation unchanged/invalid, skipping.
+2026-07-29 15:19:13,409 [INFO] [TRANSLATE] id=2803 (countermeasure): source=[sửa lại Cover 
+sửa lại Cover]
+2026-07-29 15:19:14,083 [INFO] [TRANSLATE] Completed in 673 ms. inputLength=28, outputLength=8
+2026-07-29 15:19:14,088 [INFO] [TRANSLATE] id=2803 (countermeasure): result=[カバーを修正する]
+2026-07-29 15:19:14,088 [INFO] [TRANSLATE] id=2802 (countermeasure): source=[Dán lại label
+Dán lại label]
+2026-07-29 15:19:14,474 [INFO] [TRANSLATE] Completed in 384 ms. inputLength=27, outputLength=14
+2026-07-29 15:19:14,480 [INFO] [TRANSLATE] id=2802 (countermeasure): result=[ラベルを再貼付してください。]
+2026-07-29 15:19:14,487 [INFO] [MIGRATE] id=2800: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:14,535 [INFO] [DB] Batch updated 5 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:19:19,633 [INFO] [MIGRATE] id=2798: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:19,647 [INFO] [MIGRATE] id=2796: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:19,647 [INFO] [MIGRATE] id=2795: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:19,689 [INFO] [TRANSLATE] id=2790 (countermeasure): source=[xem xét thiết kế thiết bị ghá vào sản phẩm
+xem xét thiết kế thiết bị ghá vào sản phẩm]
+2026-07-29 15:19:20,248 [INFO] [TRANSLATE] Completed in 558 ms. inputLength=85, outputLength=15
+2026-07-29 15:19:20,257 [INFO] [TRANSLATE] id=2790 (countermeasure): result=[製品へのクランプ装置設計の検討]
+2026-07-29 15:19:20,426 [INFO] [DB] Batch updated 4 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:19:25,529 [INFO] [MIGRATE] id=2785: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:25,538 [INFO] [MIGRATE] id=2783: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:25,608 [INFO] [DB] Batch updated 2 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:19:30,784 [INFO] [MIGRATE] id=2767: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:30,803 [INFO] [DB] Batch updated 1 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:19:35,933 [INFO] [TRANSLATE] id=2758 (countermeasure): source=[xem đối sách ngăn ngừa 
+xem đối sách ngăn ngừa]
+2026-07-29 15:19:36,518 [INFO] [TRANSLATE] Completed in 584 ms. inputLength=46, outputLength=12
+2026-07-29 15:19:36,524 [INFO] [TRANSLATE] id=2758 (countermeasure): result=[対策の予防措置を確認する]
+2026-07-29 15:19:36,532 [INFO] [MIGRATE] id=2756: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:36,579 [INFO] [DB] Batch updated 2 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:19:41,691 [INFO] [MIGRATE] id=2753: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:41,698 [INFO] [MIGRATE] id=2751: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:41,705 [INFO] [MIGRATE] id=2749: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:41,705 [INFO] [MIGRATE] id=2748: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:41,714 [INFO] [MIGRATE] id=2746: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:41,715 [INFO] [MIGRATE] id=2745: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:41,762 [INFO] [DB] Batch updated 6 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:19:46,851 [INFO] [MIGRATE] id=2743: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:46,861 [INFO] [MIGRATE] id=2741: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:46,880 [INFO] [MIGRATE] id=2738: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:46,891 [INFO] [TRANSLATE] id=2736 (countermeasure): source=[lắp cover lại 
+lắp cover lại]
+2026-07-29 15:19:47,475 [INFO] [TRANSLATE] Completed in 583 ms. inputLength=28, outputLength=12
+2026-07-29 15:19:47,481 [INFO] [TRANSLATE] id=2736 (countermeasure): result=[再度カバーを取り付ける。]
+2026-07-29 15:19:47,530 [INFO] [DB] Batch updated 4 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:19:52,614 [INFO] [TRANSLATE] id=2733 (countermeasure): source=[để đúng vị trí quy định
+để đúng vị trí quy định]
+2026-07-29 15:19:53,330 [INFO] [TRANSLATE] Completed in 714 ms. inputLength=47, outputLength=15
+2026-07-29 15:19:53,335 [INFO] [TRANSLATE] id=2733 (countermeasure): result=[規定された位置に正しく配置する]
+2026-07-29 15:19:53,357 [INFO] [MIGRATE] id=2730: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:53,435 [INFO] [DB] Batch updated 2 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:19:58,573 [INFO] [MIGRATE] id=2717: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:19:58,738 [INFO] [DB] Batch updated 1 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:20:03,849 [INFO] [MIGRATE] id=2705: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:03,876 [INFO] [MIGRATE] id=2701: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:03,886 [INFO] [MIGRATE] id=2699: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:03,914 [INFO] [DB] Batch updated 3 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:20:09,027 [INFO] [MIGRATE] id=2696: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:09,047 [INFO] [MIGRATE] id=2693: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:09,059 [INFO] [MIGRATE] id=2691: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:09,074 [INFO] [TRANSLATE] id=2689 (countermeasure): source=[cố định locker
+cố định locker]
+2026-07-29 15:20:09,773 [INFO] [TRANSLATE] Completed in 698 ms. inputLength=29, outputLength=9
+2026-07-29 15:20:09,777 [INFO] [TRANSLATE] id=2689 (countermeasure): result=[ロッカーを固定する]
+2026-07-29 15:20:09,820 [INFO] [DB] Batch updated 4 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:20:14,974 [INFO] [MIGRATE] id=2688: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:15,017 [INFO] [MIGRATE] id=2682: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:15,026 [INFO] [MIGRATE] id=2680: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:15,026 [INFO] [MIGRATE] id=2679: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:15,057 [INFO] [DB] Batch updated 4 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:20:20,140 [INFO] [MIGRATE] id=2678: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:20,213 [INFO] [MIGRATE] id=2671: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:20,269 [INFO] [DB] Batch updated 2 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:20:25,545 [INFO] [MIGRATE] id=2659: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:25,565 [INFO] [DB] Batch updated 1 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:20:30,782 [INFO] [MIGRATE] id=2655: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:30,783 [INFO] [MIGRATE] id=2654: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:30,873 [INFO] [MIGRATE] id=2649: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:30,939 [INFO] [DB] Batch updated 3 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:20:36,056 [INFO] [MIGRATE] id=2648: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:36,529 [INFO] [MIGRATE] id=2637: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:36,529 [INFO] [MIGRATE] id=2636: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:36,573 [INFO] [DB] Batch updated 3 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:20:41,688 [INFO] [MIGRATE] id=2634: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:41,712 [INFO] [MIGRATE] id=2630: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:41,721 [INFO] [MIGRATE] id=2628: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:41,803 [INFO] [DB] Batch updated 3 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:20:46,908 [INFO] [MIGRATE] id=2624: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:47,136 [INFO] [DB] Batch updated 1 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:20:52,314 [INFO] [MIGRATE] id=2609: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:52,350 [INFO] [MIGRATE] id=2604: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:52,375 [INFO] [DB] Batch updated 2 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:20:57,495 [INFO] [MIGRATE] id=2602: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:57,496 [INFO] [MIGRATE] id=2601: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:57,496 [INFO] [MIGRATE] id=2600: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:57,525 [INFO] [MIGRATE] id=2597: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:57,525 [INFO] [MIGRATE] id=2596: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:57,532 [INFO] [MIGRATE] id=2594: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:20:57,594 [INFO] [DB] Batch updated 6 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:21:03,673 [INFO] [MIGRATE] id=2591: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:04,772 [INFO] [DB] Batch updated 1 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:21:10,629 [INFO] [MIGRATE] id=2570: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:10,686 [INFO] [DB] Batch updated 1 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:21:15,992 [INFO] [MIGRATE] id=2558: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:16,015 [INFO] [DB] Batch updated 1 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:21:21,216 [INFO] [MIGRATE] id=2550: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:21,285 [INFO] [DB] Batch updated 1 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:21:26,399 [INFO] [MIGRATE] id=2546: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:26,418 [INFO] [MIGRATE] id=2543: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:26,514 [INFO] [DB] Batch updated 2 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:21:31,652 [INFO] [MIGRATE] id=2536: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:31,680 [INFO] [MIGRATE] id=2529: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:31,688 [INFO] [MIGRATE] id=2527: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:31,769 [INFO] [DB] Batch updated 3 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:21:36,915 [INFO] [MIGRATE] id=2522: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:36,934 [INFO] [MIGRATE] id=2520: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:36,973 [INFO] [MIGRATE] id=2516: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:36,983 [INFO] [MIGRATE] id=2514: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:37,020 [INFO] [DB] Batch updated 4 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:21:42,173 [INFO] [MIGRATE] id=2512: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:42,190 [INFO] [MIGRATE] id=2509: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:42,190 [INFO] [MIGRATE] id=2508: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:42,190 [INFO] [MIGRATE] id=2507: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:42,191 [INFO] [MIGRATE] id=2506: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:42,265 [INFO] [DB] Batch updated 5 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:21:47,402 [INFO] [MIGRATE] id=2503: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:47,410 [INFO] [MIGRATE] id=2501: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:47,418 [INFO] [MIGRATE] id=2499: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:47,430 [INFO] [MIGRATE] id=2497: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:47,439 [INFO] [MIGRATE] id=2495: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:47,439 [INFO] [MIGRATE] id=2494: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:47,470 [INFO] [DB] Batch updated 6 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:21:52,589 [INFO] [MIGRATE] id=2493: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:52,614 [INFO] [MIGRATE] id=2490: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:52,630 [INFO] [TRANSLATE] id=2487 (countermeasure): source=[5S
+
+5S]
+2026-07-29 15:21:57,129 [WARNING] [TRANSLATE] LLM returned error. status=400, elapsedMs=4498, body={"error":"Model reloaded."}
+2026-07-29 15:21:57,133 [WARNING] [TRANSLATE] Invalid translation; keeping original text.
+2026-07-29 15:21:57,134 [WARNING] [TRANSLATE] Next retry for this text will wait 300s.
+2026-07-29 15:21:57,134 [WARNING] [TRANSLATE] id=2487 (countermeasure): translation unchanged/invalid, skipping.
+2026-07-29 15:21:57,158 [INFO] [MIGRATE] id=2476: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:21:57,217 [INFO] [DB] Batch updated 3 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:22:02,435 [INFO] [MIGRATE] id=2472: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:02,523 [INFO] [DB] Batch updated 1 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:22:07,747 [INFO] [TRANSLATE] id=2462 (countermeasure): source=[Làm gờ an toàn]
+2026-07-29 15:22:18,331 [INFO] [TRANSLATE] Completed in 10583 ms. inputLength=14, outputLength=8
+2026-07-29 15:22:18,353 [INFO] [TRANSLATE] id=2462 (countermeasure): result=[安全旗を作成する]
+2026-07-29 15:22:18,354 [INFO] [MIGRATE] id=2461: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:18,390 [INFO] [MIGRATE] id=2459: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:18,391 [INFO] [MIGRATE] id=2458: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:18,411 [INFO] [MIGRATE] id=2455: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:18,442 [INFO] [DB] Batch updated 5 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:22:23,625 [INFO] [TRANSLATE] id=2450 (countermeasure): source=[Trang bị cover che đài dao]
+2026-07-29 15:22:24,130 [INFO] [TRANSLATE] Completed in 504 ms. inputLength=26, outputLength=15
+2026-07-29 15:22:24,135 [INFO] [TRANSLATE] id=2450 (countermeasure): result=[ブレードガードカバーを装備する]
+2026-07-29 15:22:24,178 [INFO] [MIGRATE] id=2445: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:24,204 [INFO] [DB] Batch updated 2 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:22:29,355 [INFO] [MIGRATE] id=2443: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:29,380 [INFO] [MIGRATE] id=2440: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:29,448 [INFO] [DB] Batch updated 2 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:22:34,607 [INFO] [MIGRATE] id=2433: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:34,608 [INFO] [MIGRATE] id=2432: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:34,679 [INFO] [MIGRATE] id=2425: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:34,708 [INFO] [DB] Batch updated 3 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:22:39,859 [INFO] [MIGRATE] id=2395: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:39,859 [INFO] [MIGRATE] id=2389: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:39,859 [INFO] [MIGRATE] id=2388: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:39,859 [INFO] [MIGRATE] id=2386: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:39,859 [INFO] [MIGRATE] id=2380: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:39,860 [INFO] [MIGRATE] id=2379: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:39,860 [INFO] [MIGRATE] id=2377: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:39,860 [INFO] [MIGRATE] id=2374: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:39,860 [INFO] [MIGRATE] id=2373: copying existing Japanese from countermeasure to countermeasure_jp.
+2026-07-29 15:22:39,909 [INFO] [DB] Batch updated 9 record(s) for countermeasure_jp in one commit.
+2026-07-29 15:22:40,650 [INFO] [SERVICE] Shutdown signal received (2). Finishing current cycle...
+2026-07-29 15:22:40,752 [INFO] [SERVICE] Stopped.
+2026-07-29 16:41:00,247 [INFO] [TRANSLATE] Completed in 10589 ms. inputLength=30, outputLength=16
+2026-07-29 16:41:00,700 [INFO] [TRANSLATE] Completed in 385 ms. inputLength=23, outputLength=16
+2026-07-29 16:42:13,072 [INFO] [TRANSLATE] Completed in 953 ms. inputLength=54, outputLength=33
+2026-07-29 16:44:45,318 [INFO] [TRANSLATE] Completed in 952 ms. inputLength=24, outputLength=18
+2026-07-29 16:44:45,870 [INFO] [TRANSLATE] Completed in 507 ms. inputLength=16, outputLength=16
+2026-07-29 16:48:59,072 [INFO] [TRANSLATE] Completed in 1043 ms. inputLength=11, outputLength=3
+2026-07-29 16:48:59,633 [INFO] [TRANSLATE] Completed in 483 ms. inputLength=17, outputLength=16
